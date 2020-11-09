@@ -29,17 +29,6 @@ public class MainActivity extends AppCompatActivity  {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.background);
-        Point point = new Point();
-
-        getWindowManager().getDefaultDisplay().getSize(point);
-
-        int screenX = point.x;
-        int screenY= point.y;
-
-        screenRatioX  = 1080/screenX;
-        screenRatioY  = 1920/screenY;
-
         final ImageView backgroundOne = (ImageView) findViewById(R.id.background_one);
         final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_two);
 
