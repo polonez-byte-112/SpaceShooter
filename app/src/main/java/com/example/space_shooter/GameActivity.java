@@ -9,6 +9,7 @@ import android.view.WindowManager;
 public class GameActivity extends AppCompatActivity {
 
     GameView gv;
+    MainActivity ma;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +20,7 @@ public class GameActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getSize(point);
 
         gv= new GameView(this, point.x , point.y);
+        ma = new MainActivity();
         setContentView(gv);
     }
 
@@ -34,5 +36,6 @@ public class GameActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         gv.resume();
+
     }
 }

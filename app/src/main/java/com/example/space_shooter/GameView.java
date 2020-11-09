@@ -1,14 +1,19 @@
 package com.example.space_shooter;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.view.SurfaceView;
+import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
 
 public class GameView extends SurfaceView implements Runnable {
 
-    private int screenX;
-   private int screenY;
-   private float screenRatioX, screenRatioY;
-   private GameActivity gameActivity;
+    int screenX;
+    int screenY;
+    MainActivity ma;
+    float screenRatioX, screenRatioY;
+    GameActivity gameActivity;
 
    private boolean isRunning=true;
    private Thread thread;
@@ -18,16 +23,38 @@ public class GameView extends SurfaceView implements Runnable {
         super(gameActivity);
 
         this.gameActivity=gameActivity;
+        this.gameActivity.ma = ma;
         this.screenX=screenX;
         this.screenY=screenY;
+
+        screenRatioX=1080/ screenX;
+        screenRatioY =1920/ screenY;
+
 
     }
 
 
 
-    public void update(){}
+    public void update(){
 
-    public void draw(){}
+
+
+    }
+
+    public void draw(){
+
+        if(getHolder().getSurface().isValid()){
+
+
+
+            Canvas canvas = getHolder().lockCanvas();
+
+
+
+            getHolder().unlockCanvasAndPost(canvas);
+        }
+
+    }
 
 
 

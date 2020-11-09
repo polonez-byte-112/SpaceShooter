@@ -20,8 +20,7 @@ public class MainActivity extends AppCompatActivity  {
 
     int screenX,screenY;
     int screenRatioX, screenRatioY;
-
-
+     ImageView backgroundOne, backgroundTwo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +28,8 @@ public class MainActivity extends AppCompatActivity  {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        final ImageView backgroundOne = (ImageView) findViewById(R.id.background_one);
-        final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_two);
+         backgroundOne = (ImageView) findViewById(R.id.background_one);
+         backgroundTwo = (ImageView) findViewById(R.id.background_two);
 
 
         final ValueAnimator animator = ValueAnimator.ofFloat(1.0f, 0.0f);
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity  {
                 backgroundTwo.setTranslationY(translationY - height);
             }
         });
+
         animator.start();
 
 
