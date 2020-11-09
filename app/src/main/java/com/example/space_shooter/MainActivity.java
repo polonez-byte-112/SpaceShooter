@@ -33,10 +33,6 @@ public class MainActivity extends AppCompatActivity  {
         final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_two);
 
 
-
-
-
-
         final ValueAnimator animator = ValueAnimator.ofFloat(1.0f, 0.0f);
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.setInterpolator(new LinearInterpolator());

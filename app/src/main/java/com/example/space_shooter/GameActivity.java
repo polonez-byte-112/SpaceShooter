@@ -9,25 +9,30 @@ import android.view.WindowManager;
 public class GameActivity extends AppCompatActivity {
 
     GameView gv;
-    int screenX,  screenY,screenRatioX, screenRatioY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        gv= new GameView(this, screenX, screenY);
 
         Point point = new Point();
-
         getWindowManager().getDefaultDisplay().getSize(point);
 
-        int screenX = point.x;
-        int screenY= point.y;
-
-        screenRatioX  = 1080/screenX;
-        screenRatioY  = 1920/screenY;
-
-
+        gv= new GameView(this, point.x , point.y);
         setContentView(gv);
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gv.pause();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        gv.resume();
     }
 }
