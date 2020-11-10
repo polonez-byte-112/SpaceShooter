@@ -1,13 +1,14 @@
 package com.example.space_shooter;
 
-import android.animation.ValueAnimator;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+
 import android.view.MotionEvent;
 import android.view.SurfaceView;
-import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
+
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.List;
 
 public class GameView extends SurfaceView implements Runnable {
 
@@ -17,8 +18,8 @@ public class GameView extends SurfaceView implements Runnable {
     private   GameActivity gameActivity;
     private  Background bg1, bg2;
     private    Paint paint;
+    private List<Bullet> bullets;
     private    Flight flight;
-
    private boolean isRunning=true;
    private Thread thread;
 
@@ -40,21 +41,21 @@ public class GameView extends SurfaceView implements Runnable {
 
         flight = new Flight(this, screenX,screenY, getResources());
         centerShip = flight.x;
-        System.out.println(centerShip);
 
         bg2.y=screenY;
 
 
         paint= new Paint();
 
-
-
+        bullets = new ArrayList<>();
 
     }
 
 
 
     public void update(){
+
+
 
         bg1.y -= 10 * screenRatioX;
         bg2.y -= 10 * screenRatioX;
@@ -69,10 +70,43 @@ public class GameView extends SurfaceView implements Runnable {
         }
 
 
-        if(flight.isGoingLeft==true){
-
+        if(flight.isGoingLeft==true && flight.isGoingRight==false){
+            flight.x -=10;
         }
 
+
+
+        if(flight.isGoingLeft==false && flight.isGoingRight==true){
+            flight.x +=10;
+        }
+
+
+
+        if(flight.x >=screenX-flight.widthFlight){
+            flight.x=screenX-flight.widthFlight;
+        }
+
+        if(flight.x<0){
+            flight.x =0;
+        }
+
+
+
+        // bullets
+
+        List<Bullet> trash = new ArrayList<>();
+
+        for (Bullet bullet: bullets){
+            if(bullet.y>screenY && bullet.y<0){
+                trash.add(bullet);
+            }
+            bullet.y -=60 * screenRatioY;
+        }
+
+
+        for(Bullet bullet : trash){
+            bullets.remove(bullet);
+        }
 
 
     }
@@ -90,43 +124,41 @@ public class GameView extends SurfaceView implements Runnable {
 
             canvas.drawBitmap(flight.getFlight(), flight.x, flight.y, paint);
 
+            try {
+                for (Bullet bullet : bullets) {
+
+                    canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
+
+                }
+            } catch (ConcurrentModificationException e){
+                e.printStackTrace();
+            }
             getHolder().unlockCanvasAndPost(canvas);
         }
 
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-        switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                if (event.getX() <= screenX / 2 &&  event.getY()>=flight.y ) {
-                    flight.isGoingRight=false;
-                    flight.isGoingLeft=true;
-                    System.out.println("Ekran przesuwany w lewo");
-                }
-                if (event.getX() > screenX / 2  &&  event.getY()>=flight.y ) {
-
-                    flight.isGoingRight=true;
-                    flight.isGoingLeft=false;
-                    System.out.println("Ekran przesuwany w prawo");
-                }
-                break;
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (event.getX() <= screenX / 2 && event.getY() >= flight.y-150) {
+                flight.isGoingRight = false;
+                flight.isGoingLeft = true;
+            }
+            if (event.getX() > screenX / 2 && event.getY() >= flight.y-150) {
+                flight.isGoingRight = true;
+                flight.isGoingLeft = false;
+            }
 
 
-
-            case MotionEvent.ACTION_UP:
-                if ( event.getY()<flight.y ) {
-                    System.out.println("STRZAL!!");
-                }
-
-                break;
+            if (event.getY() < flight.y-150) {
+                createNewBullet();
+            }
         }
-
-
         return true;
     }
+
+
 
     public void sleep(){
         try {
@@ -157,6 +189,16 @@ public class GameView extends SurfaceView implements Runnable {
             draw();
             sleep();
         }
+    }
+
+    public void createNewBullet(){
+        Bullet bullet = new Bullet(getResources());
+        bullet.x= (int) ((( flight.x + flight.widthFlight/2)-18)*screenRatioX);
+        bullet.y = flight.y-20;
+        bullets.add(bullet);
+
+
+
     }
 
 }

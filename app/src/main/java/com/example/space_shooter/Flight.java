@@ -25,8 +25,6 @@ public class Flight {
             flight3= BitmapFactory.decodeResource(res, R.drawable.fly3);
 
 
-            //nie wina zdjec bo sprawdzalem na zdj z innego projektu
-
             widthFlight = flight1.getWidth();
             heightFlight = flight1.getHeight();
 
