@@ -7,13 +7,13 @@ import android.graphics.BitmapFactory;
 public class Background {
 
     int x=0,y=0;
+    Bitmap background;
 
     Background(Resources res, int screenX, int screenY){
 
 
-        Bitmap background  = BitmapFactory.decodeResource(res, R.drawable.background);
-
-        background= Bitmap.createScaledBitmap(background, screenX, screenY,false);
+        background  = BitmapFactory.decodeResource(res, R.drawable.background);
+        background  = Bitmap.createScaledBitmap(background, screenX, screenY,false);
 
 
     }

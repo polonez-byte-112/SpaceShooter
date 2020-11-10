@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity  {
     int screenX,screenY;
     int screenRatioX, screenRatioY;
      ImageView backgroundOne, backgroundTwo;
-
+   private ValueAnimator animator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity  {
          backgroundTwo = (ImageView) findViewById(R.id.background_two);
 
 
-        final ValueAnimator animator = ValueAnimator.ofFloat(1.0f, 0.0f);
+          animator = ValueAnimator.ofFloat(1.0f, 0.0f);
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.setInterpolator(new LinearInterpolator());
         animator.setDuration(10000L);
@@ -59,11 +59,21 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
+
     }
 
 
+    @Override
+    protected void onResume() {
+        animator.start();
+        super.onResume();
+    }
 
-
-
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            animator.pause();
+        }
+    }
 }
