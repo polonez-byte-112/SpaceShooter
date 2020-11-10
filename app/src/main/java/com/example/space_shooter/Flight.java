@@ -46,8 +46,9 @@ public class Flight {
 
              this.gameView=gameView;
 
+
             y = (int) (screenY - heightFlight*screenRatioY)-40;
-            x = (int) ((screenX/2) * screenRatioX);
+            x = (int) ((screenX/2-widthFlight/2)*screenRatioX);
 
     }
 

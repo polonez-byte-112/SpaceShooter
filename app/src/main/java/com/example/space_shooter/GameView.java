@@ -22,6 +22,8 @@ public class GameView extends SurfaceView implements Runnable {
    private boolean isRunning=true;
    private Thread thread;
 
+   public int centerShip=0;
+
 
     public GameView(GameActivity gameActivity, int screenX, int screenY) {
         super(gameActivity);
@@ -37,7 +39,8 @@ public class GameView extends SurfaceView implements Runnable {
         bg2= new Background(getResources(), screenX, screenY);
 
         flight = new Flight(this, screenX,screenY, getResources());
-
+        centerShip = flight.x;
+        System.out.println(centerShip);
 
         bg2.y=screenY;
 
