@@ -26,9 +26,9 @@ I will check if I will have time for this
 ## 📷 Screenshots
 
 <p align="center">
-   <img src="photo2.jpg" width="250" alt="photo2">
-    <img src="photo1.jpg" width="250" alt="photo1">
-   <img src="photo3.jpg" width="250" alt="photo3">
+   <img src="photo5.jpg" width="250" alt="photo2">
+    <img src="photo4.jpg" width="250" alt="photo1">
+   <img src="photo6.jpg" width="250" alt="photo3">
 </p>
 
 
