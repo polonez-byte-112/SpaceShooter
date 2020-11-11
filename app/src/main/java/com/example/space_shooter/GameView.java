@@ -1,8 +1,10 @@
 package com.example.space_shooter;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
@@ -24,7 +26,9 @@ public class GameView extends SurfaceView implements Runnable {
     private Enemy[] enemies;
     private Random random;
    private boolean isRunning=true;
+   private boolean isGameOver=false;
    private Thread thread;
+   private int score;
     private List<Bullet> trash;
    public int centerShip=0;
 
@@ -51,14 +55,19 @@ public class GameView extends SurfaceView implements Runnable {
         paint= new Paint();
 
         bullets = new ArrayList<>();
-        enemies= new Enemy[4];
+        enemies= new Enemy[5];
 
-        for (int i = 0;i < 4;i++) {
-            Enemy enemy =new Enemy(getResources());
+        for (int i=0; i<5; i++){
+           Enemy  enemy =new Enemy(getResources(), screenX, screenY);
             enemies[i]=enemy;
+
         }
 
         random= new Random();
+        score=0;
+
+
+
 
     }
 
@@ -103,6 +112,8 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
+
+
         // bullets
 
         trash = new ArrayList<>(9999);
@@ -114,6 +125,15 @@ public class GameView extends SurfaceView implements Runnable {
             if(bullet.y<= screenY) {
                 bullet.y = bullet.y-(int)( ( 70 * screenRatioY));
             }
+
+            for(Enemy enemy: enemies){
+                if(Rect.intersects(enemy.getRectangle(), bullet.getRectangle())){
+                    score++;
+                    bullet.y=-500;
+                    enemy.y=-500;
+                    enemy.wasShot=true;
+                }
+            }
         }
 
 
@@ -122,6 +142,40 @@ public class GameView extends SurfaceView implements Runnable {
         }
 
 
+
+        for (Enemy enemy : enemies) {
+
+            enemy.y += enemy.speed;
+
+            if ( enemy.y + enemy.heightEnemy < 0) {
+
+
+                int bound = (int) (30 * screenRatioX);
+                enemy.speed = random.nextInt(bound);
+
+                if (enemy.speed < 10 * screenRatioX)
+                    enemy.speed = (int) (10 * screenRatioX);
+
+                enemy.x = random.nextInt(screenX -enemy.widthEnemy);
+                enemy.y = -enemy.heightEnemy;
+
+            }
+
+
+
+
+            if(Rect.intersects(flight.getRectangle(), enemy.getRectangle())){
+                enemy.y=-500;
+                isGameOver=true;
+            }
+
+            if(enemy.y>=screenY){
+                enemy.x = random.nextInt(screenX -enemy.widthEnemy);
+                enemy.y = -enemy.heightEnemy;
+            }
+
+
+        }
 
 
 
@@ -145,6 +199,12 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(bg1.background, bg1.x, bg1.y,paint);
             canvas.drawBitmap(bg2.background, bg2.x, bg2.y,paint);
 
+
+
+            for (Enemy enemy: enemies){
+                canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
+            }
+
             canvas.drawBitmap(flight.getFlight(), flight.x, flight.y, paint);
 
             try {
@@ -159,13 +219,28 @@ public class GameView extends SurfaceView implements Runnable {
             }
 
 
-            for (Enemy enemy: enemies){
-                canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
+            if(isGameOver){
+                isRunning=false;
+                getHolder().unlockCanvasAndPost(canvas);
+                waitBeforeExciting();
             }
 
             getHolder().unlockCanvasAndPost(canvas);
         }
 
+    }
+
+    private void waitBeforeExciting() {
+        try {
+            Thread.sleep(1000);
+            gameActivity.startActivity(new Intent(gameActivity, MainActivity.class));
+
+            // zmienic na strone z wynikiem, i dodac takie samo tło
+
+            gameActivity.finish();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -234,5 +309,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 
     }
+
+
 
 }

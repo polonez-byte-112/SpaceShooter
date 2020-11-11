@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
+import java.util.Random;
+
 import static com.example.space_shooter.GameView.screenRatioX;
 import static com.example.space_shooter.GameView.screenRatioY;
 
@@ -13,20 +15,20 @@ public class Enemy {
     int widthEnemy, heightEnemy;
     int wingEnemyCounter=0;
     int x,y;
-    int speed=20;
+    int speed=10;
     public boolean wasShot=true;
     Bitmap enemy1, enemy2, enemy3;
 
-    Enemy(Resources res){
-        enemy1= BitmapFactory.decodeResource(res, R.drawable.enemy1);
-        enemy2= BitmapFactory.decodeResource(res, R.drawable.enemy2);
-        enemy3= BitmapFactory.decodeResource(res, R.drawable.enemy3);
+    Enemy(Resources res, int screenX, int screenY){
+        enemy1= BitmapFactory.decodeResource(res, R.drawable.enemy1backup);
+        enemy2= BitmapFactory.decodeResource(res, R.drawable.enemy2backup);
+        enemy3= BitmapFactory.decodeResource(res, R.drawable.enemy3backup);
 
         widthEnemy = enemy1.getWidth();
         heightEnemy = enemy1.getHeight();
 
-        widthEnemy /=4;
-        heightEnemy /=4;
+        widthEnemy = (int) (widthEnemy*0.5);
+        heightEnemy= (int) (heightEnemy*0.7);
 
         widthEnemy =  (int)( widthEnemy *screenRatioX);
        heightEnemy =  (int)( heightEnemy *screenRatioY);
@@ -38,8 +40,9 @@ public class Enemy {
 
 
         // x i y potem ustawimy
-
-        y = -heightEnemy;
+        Random random = new Random();
+        x= random.nextInt(screenX- widthEnemy);
+        y = 0;
     }
 
 
