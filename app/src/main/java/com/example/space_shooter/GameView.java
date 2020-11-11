@@ -22,7 +22,7 @@ public class GameView extends SurfaceView implements Runnable {
     private    Flight flight;
    private boolean isRunning=true;
    private Thread thread;
-
+    private List<Bullet> trash;
    public int centerShip=0;
 
 
@@ -94,19 +94,24 @@ public class GameView extends SurfaceView implements Runnable {
 
         // bullets
 
-        List<Bullet> trash = new ArrayList<>();
+        trash = new ArrayList<>(9999);
 
         for (Bullet bullet: bullets){
-            if(bullet.y>screenY && bullet.y<0){
+            if(bullet.y>screenY){
                 trash.add(bullet);
             }
-            bullet.y -=60 * screenRatioY;
+            if(bullet.y<= screenY) {
+                bullet.y = bullet.y-(int)( ( 70 * screenRatioY));
+            }
         }
 
 
         for(Bullet bullet : trash){
             bullets.remove(bullet);
         }
+
+
+
 
 
     }
@@ -131,6 +136,7 @@ public class GameView extends SurfaceView implements Runnable {
 
                 }
             } catch (ConcurrentModificationException e){
+                System.out.println("Błąd z bullet");
                 e.printStackTrace();
             }
             getHolder().unlockCanvasAndPost(canvas);
@@ -140,6 +146,9 @@ public class GameView extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+
+
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (event.getX() <= screenX / 2 && event.getY() >= flight.y-150) {
                 flight.isGoingRight = false;
@@ -155,6 +164,7 @@ public class GameView extends SurfaceView implements Runnable {
                 createNewBullet();
             }
         }
+
         return true;
     }
 
