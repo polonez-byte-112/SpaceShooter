@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/background" />
+        android:src="@drawable/start_background" />
 
     <ImageView
         android:id="@+id/background_two"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/background" />
+        android:src="@drawable/start_background" />
 
     <Button
         android:id="@+id/play"
@@ -26,7 +26,10 @@
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginBottom="200dp"
-        android:text="PLAY" />
+        android:background="@drawable/bg_startbutton"
+        android:text="PLAY"
+        style="?android:attr/borderlessButtonStyle"
+        />
 
     <TextView
         android:id="@+id/textView"
