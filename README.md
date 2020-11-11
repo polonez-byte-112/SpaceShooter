@@ -12,7 +12,7 @@ Export project from Zip and Import full folder
 
 ## 💻 Progress
 
-████▁▁▁▁▁▁ 40%
+█████▁▁▁▁▁ 50%
  
 I want to improve this project heavily adding Bosses, overlaying music etc.
 
