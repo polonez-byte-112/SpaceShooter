@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.Random;
 
 public class GameView extends SurfaceView implements Runnable {
 
@@ -20,6 +21,8 @@ public class GameView extends SurfaceView implements Runnable {
     private    Paint paint;
     private List<Bullet> bullets;
     private    Flight flight;
+    private Enemy[] enemies;
+    private Random random;
    private boolean isRunning=true;
    private Thread thread;
     private List<Bullet> trash;
@@ -48,6 +51,14 @@ public class GameView extends SurfaceView implements Runnable {
         paint= new Paint();
 
         bullets = new ArrayList<>();
+        enemies= new Enemy[4];
+
+        for (int i = 0;i < 4;i++) {
+            Enemy enemy =new Enemy(getResources());
+            enemies[i]=enemy;
+        }
+
+        random= new Random();
 
     }
 
@@ -114,6 +125,13 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
+
+
+
+
+
+
+
     }
 
     public void draw(){
@@ -139,6 +157,12 @@ public class GameView extends SurfaceView implements Runnable {
                 System.out.println("Błąd z bullet");
                 e.printStackTrace();
             }
+
+
+            for (Enemy enemy: enemies){
+                canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
+            }
+
             getHolder().unlockCanvasAndPost(canvas);
         }
 

@@ -3,6 +3,7 @@ package com.example.space_shooter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 import com.example.space_shooter.R;
 
@@ -28,7 +29,6 @@ public class Flight {
             widthFlight = flight1.getWidth();
             heightFlight = flight1.getHeight();
 
-        System.out.println("Width: "+ flight1.getWidth()+" Height: "+ flight1.getHeight());
 
             widthFlight /= 4;
             heightFlight /= 4;
@@ -64,5 +64,10 @@ public class Flight {
         }
         wingCounter=0;
         return flight3;
+    }
+
+
+    Rect getRectangle(){
+        return new Rect(x,y, x+widthFlight, y+heightFlight);
     }
 }
