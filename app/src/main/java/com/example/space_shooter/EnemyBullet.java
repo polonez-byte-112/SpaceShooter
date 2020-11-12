@@ -11,7 +11,6 @@ import static com.example.space_shooter.GameView.screenRatioY;
 public class EnemyBullet {
 
     int x,y,width,height;
-    int speed=20;
 
     Bitmap enemyBullet;
 
