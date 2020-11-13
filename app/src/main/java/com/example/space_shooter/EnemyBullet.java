@@ -12,15 +12,16 @@ public class EnemyBullet {
 
     int x,y,width,height;
 
-    Bitmap enemyBullet;
+
+    Bitmap bullet;
 
     EnemyBullet(Resources res){
 
-        enemyBullet= BitmapFactory.decodeResource(res, R.drawable.bullet2);
-        width= (int) ((enemyBullet.getWidth()*1.5)*screenRatioX);
-        height= (int) ((enemyBullet.getHeight()*1.5)* screenRatioY);
+        bullet= BitmapFactory.decodeResource(res, R.drawable.bullet2);
+        width= (int) ((bullet.getWidth()*1.5)*screenRatioX);
+        height= (int) ((bullet.getHeight()*1.5)* screenRatioY);
 
-        enemyBullet= Bitmap.createScaledBitmap(enemyBullet, width,height, false);
+        bullet= Bitmap.createScaledBitmap(bullet, width,height, false);
 
 
     }

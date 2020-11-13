@@ -32,7 +32,8 @@ public class GameView extends SurfaceView implements Runnable {
    private int score;
     private List<Bullet> trash;
     private List<EnemyBullet> enemyTrash;
-   public int centerShip;
+   public int centerShip=0;
+   public int updateCounter=0;
 
 
     public GameView(GameActivity gameActivity, int screenX, int screenY) {
@@ -57,7 +58,7 @@ public class GameView extends SurfaceView implements Runnable {
         paint= new Paint();
 
         bullets = new ArrayList<>();
-        enemyBullets= new ArrayList<>();
+        enemyBullets = new ArrayList<>();
         enemies= new Enemy[5];
 
         for (int i=0; i<5; i++){
@@ -77,17 +78,13 @@ public class GameView extends SurfaceView implements Runnable {
 
 
     public void update(){
-
-
-
+        updateCounter++;
         bg1.y -= 10 * screenRatioX;
         bg2.y -= 10 * screenRatioX;
-
 
         if (bg1.y + bg1.background.getHeight() < 0) {
             bg1.y = screenY;
         }
-
         if (bg2.y + bg2.background.getHeight() < 0) {
             bg2.y = screenY;
         }
@@ -96,37 +93,27 @@ public class GameView extends SurfaceView implements Runnable {
         if(flight.isGoingLeft==true && flight.isGoingRight==false){
             flight.x -=10;
         }
-
-
-
         if(flight.isGoingLeft==false && flight.isGoingRight==true){
             flight.x +=10;
         }
-
-
-
         if(flight.x >=screenX-flight.widthFlight){
             flight.x=screenX-flight.widthFlight;
         }
-
         if(flight.x<0){
             flight.x =0;
         }
-
-
-
 
 
         // bullets
 
         trash = new ArrayList<>(9999);
         for (Bullet bullet: bullets){
-            if(bullet.y>screenY){
+            if(bullet.y<0){
                 trash.add(bullet);
             }
-            if(bullet.y<= screenY) {
+
                 bullet.y = bullet.y-(int)( ( 70 * screenRatioY));
-            }
+
 
             for(Enemy enemy: enemies){
                 if(Rect.intersects(enemy.getRectangle(), bullet.getRectangle())){
@@ -141,31 +128,9 @@ public class GameView extends SurfaceView implements Runnable {
             bullets.remove(bullet);
         }
 
-        //Enemy bullet
-        enemyTrash = new ArrayList<>(9999);
-        for (EnemyBullet enemyBullet: enemyBullets){
-            if(enemyBullet.y<screenY){
-                enemyTrash.add(enemyBullet);
-            }
-
-            if(enemyBullet.y>= screenY) {
-                enemyBullet.y = enemyBullet.y+(int)( ( 80 * screenRatioY));
-            }
 
 
-            if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
-                enemyBullet.y=500;
-                flight.y=-500;
-                isGameOver=true;
-            }
-
-        }
-
-
-        for(EnemyBullet enemyBullet : enemyTrash){
-            enemyBullets.remove(enemyBullet);
-        }
-
+        //Enemy
 
         for (Enemy enemy : enemies) {
 
@@ -180,29 +145,21 @@ public class GameView extends SurfaceView implements Runnable {
                 if (enemy.speed < 10 * screenRatioY)
                     enemy.speed = (int) (10 * screenRatioY);
 
-                //tworzymy pocisk co 1-3 s i wysylamy go z predkoscia nizej podana
-                createNewEnemyBullet(random.nextInt(2000)+1000);
-
-
                 enemy.x = random.nextInt(screenX -enemy.widthEnemy);
-
                 enemy.y = -enemy.heightEnemy;
 
-              for(EnemyBullet enemyBullet: enemyBullets){
-                      enemyBullet.x= enemy.x+enemy.widthEnemy/2;
-                      enemyBullet.y = enemy.y+enemyBullet.height;
-              }
-
             }
+
+            //dla kazdego enemy robimy nowy bullet  co x czasu
+            // najpierw spróbujmy normalnie co 1s
+
+
 
 
 
 
             if(Rect.intersects(flight.getRectangle(), enemy.getRectangle())){
                 enemy.y=-500;
-                for(EnemyBullet enemyBullet : enemyBullets){
-                    enemyBullet.y=-500;
-                }
                 isGameOver=true;
             }
 
@@ -215,45 +172,68 @@ public class GameView extends SurfaceView implements Runnable {
         }
 
 
+        //Enemy bullets
+        enemyTrash = new ArrayList<>(9999);
+
+        for(EnemyBullet enemyBullet: enemyBullets){
+            if(enemyBullet.y>screenY){
+                enemyTrash.add(enemyBullet);
+            }
+
+            enemyBullet.y = enemyBullet.y+(int)( ( 70 * screenRatioY));
+
+            if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
+                isGameOver=true;
+            }
+        }
+
+        for(EnemyBullet enemyBullet: enemyTrash){
+            enemyBullets.remove(enemyBullet);
+        }
 
 
 
 
 
 
-
+        if(updateCounter==30){
+            System.out.println("Minela 1 Sekunda");
+            createNewEnemyBullet();
+            updateCounter=0;
+        }
 
     }
 
     public void draw(){
 
         if(getHolder().getSurface().isValid()){
-
-
-
             Canvas canvas = getHolder().lockCanvas();
 
             canvas.drawBitmap(bg1.background, bg1.x, bg1.y,paint);
             canvas.drawBitmap(bg2.background, bg2.x, bg2.y,paint);
 
 
-
             for (Enemy enemy: enemies){
                 canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
-
-                //nie wiem czy dobrze zagniezdzam
-                for(EnemyBullet enemyBullet: enemyBullets){
-                    canvas.drawBitmap(enemyBullet.enemyBullet, enemyBullet.x, enemyBullet.y, paint);
-                }
             }
 
+
             canvas.drawBitmap(flight.getFlight(), flight.x, flight.y, paint);
+
 
             try {
                 for (Bullet bullet : bullets) {
 
                     canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
 
+                }
+
+                for(Enemy enemy: enemies){
+                    for (EnemyBullet enemyBullet : enemyBullets) {
+
+                        canvas.drawBitmap(enemyBullet.bullet, enemyBullet.x, enemyBullet.y, paint);
+
+                    }
                 }
             } catch (ConcurrentModificationException e){
                 System.out.println("Błąd z bullet");
@@ -291,11 +271,11 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            if (event.getX() <= (int)(screenX / 2) && event.getY() >= flight.y-150) {
+            if (event.getX() <= screenX / 2 && event.getY() >= flight.y-150) {
                 flight.isGoingRight = false;
                 flight.isGoingLeft = true;
             }
-            if (event.getX() > (int)(screenX / 2) && event.getY() >= flight.y-150) {
+            if (event.getX() > screenX / 2 && event.getY() >= flight.y-150) {
                 flight.isGoingRight = true;
                 flight.isGoingLeft = false;
             }
@@ -348,23 +328,20 @@ public class GameView extends SurfaceView implements Runnable {
         bullet.y = flight.y-20;
         bullets.add(bullet);
 
+
+
     }
 
-    public void createNewEnemyBullet(int randomTime){
 
-for(Enemy enemy: enemies){
-    for (int i = 0; i <=randomTime ; i++) {
-
-        if(i==randomTime){
+    public void createNewEnemyBullet(){
+        for(Enemy enemy: enemies){
             EnemyBullet enemyBullet = new EnemyBullet(getResources());
-            enemyBullet.x = (int) (((enemy.x+ enemy.widthEnemy/2)-18)*screenRatioX);
-            enemyBullet.y = enemy.y-20;
+
+            enemyBullet.x = (int) (((enemy.x+enemy.widthEnemy/2)-18)*screenRatioX);
+            enemyBullet.y= enemy.y+20;
+
             enemyBullets.add(enemyBullet);
         }
-
-    }
-}
-
     }
 
 
