@@ -34,6 +34,7 @@ public class GameView extends SurfaceView implements Runnable {
     private List<EnemyBullet> enemyTrash;
    public int centerShip=0;
    public int updateCounter=0;
+    int randomShot;
 
 
     public GameView(GameActivity gameActivity, int screenX, int screenY) {
@@ -71,7 +72,7 @@ public class GameView extends SurfaceView implements Runnable {
         score=0;
 
 
-
+       randomShot = random.nextInt(40-20)+20;
 
     }
 
@@ -180,7 +181,7 @@ public class GameView extends SurfaceView implements Runnable {
                 enemyTrash.add(enemyBullet);
             }
 
-            enemyBullet.y = enemyBullet.y+(int)( ( 70 * screenRatioY));
+            enemyBullet.y = enemyBullet.y+(int)( ( 30 * screenRatioY));
 
             if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
                 isGameOver=true;
@@ -196,10 +197,10 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
-        if(updateCounter==30){
-            System.out.println("Minela 1 Sekunda");
+        if(updateCounter==randomShot){
             createNewEnemyBullet();
             updateCounter=0;
+
         }
 
     }
@@ -254,11 +255,9 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void waitBeforeExciting() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
             gameActivity.startActivity(new Intent(gameActivity, MainActivity.class));
-
             // zmienic na strone z wynikiem, i dodac takie samo tło
-
             gameActivity.finish();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -336,7 +335,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void createNewEnemyBullet(){
         for(Enemy enemy: enemies){
             EnemyBullet enemyBullet = new EnemyBullet(getResources());
-
+            randomShot = random.nextInt(40-20)+20;
             enemyBullet.x = (int) (((enemy.x+enemy.widthEnemy/2)-18)*screenRatioX);
             enemyBullet.y= enemy.y+20;
 
