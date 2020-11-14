@@ -18,8 +18,13 @@ public class EnemyBullet {
     EnemyBullet(Resources res){
 
         bullet= BitmapFactory.decodeResource(res, R.drawable.bullet2);
-        width= (int) ((bullet.getWidth()*1.5)*screenRatioX);
-        height= (int) ((bullet.getHeight()*1.5)* screenRatioY);
+        width= bullet.getWidth();
+        height= bullet.getHeight();
+        width = (int) (width*1.5);
+        height = (int) (height*1.5);
+
+        width= (int) (width*screenRatioX);
+        height= (int) (height* screenRatioY);
 
         bullet= Bitmap.createScaledBitmap(bullet, width,height, false);
 

@@ -2,6 +2,7 @@ package com.example.space_shooter;
 
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 
 import android.graphics.Rect;
@@ -167,15 +168,7 @@ public class GameView extends SurfaceView implements Runnable {
                 enemy.x = random.nextInt(screenX -enemy.widthEnemy);
                 enemy.y = -enemy.heightEnemy;
 
-
-
-
             }
-
-
-
-
-
 
         }
 
@@ -224,14 +217,18 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(bg1.background, bg1.x, bg1.y,paint);
             canvas.drawBitmap(bg2.background, bg2.x, bg2.y,paint);
 
-            try{
-                for (EnemyBullet enemyBullet : enemyBullets) {
+            canvas.drawBitmap(flight.getFlight(), flight.x, flight.y, paint);
 
-                    canvas.drawBitmap(enemyBullet.bullet, enemyBullet.x, enemyBullet.y, paint);
 
+            try {
+                for (Bullet bullet : bullets) {
+
+                    canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
                 }
+
+
             } catch (ConcurrentModificationException e){
-                System.out.println("Błąd z  enemy bullet");
+                System.out.println("Błąd z bullet");
                 e.printStackTrace();
 
             }
@@ -248,22 +245,19 @@ public class GameView extends SurfaceView implements Runnable {
 
             }
 
+            try{
+                for (EnemyBullet enemyBullet : enemyBullets) {
 
-            canvas.drawBitmap(flight.getFlight(), flight.x, flight.y, paint);
+                    canvas.drawBitmap(enemyBullet.bullet, enemyBullet.x, enemyBullet.y, paint);
 
-
-            try {
-                for (Bullet bullet : bullets) {
-
-                    canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
                 }
-
-
-            } catch (ConcurrentModificationException e){
-                System.out.println("Błąd z bullet");
+            } catch (ConcurrentModificationException e)
+            {
+                System.out.println("Błąd z  enemy bullet");
                 e.printStackTrace();
 
             }
+
 
 
             if(isGameOver){

@@ -19,8 +19,8 @@ public class Bullet {
         bullet= BitmapFactory.decodeResource(res, R.drawable.bullet4);
         width= bullet.getWidth();
         height= bullet.getHeight();
-        width = width*2;
-        height = height*2;
+        width = (int) (width*1.7);
+        height = (int) (height*1.7);
 
         width= (int) (width*screenRatioX);
         height= (int) (height* screenRatioY);
