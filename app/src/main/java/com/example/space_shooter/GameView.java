@@ -10,6 +10,7 @@ import android.view.SurfaceView;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -58,8 +59,8 @@ public class GameView extends SurfaceView implements Runnable {
 
         paint= new Paint();
         random= new Random();
-        bullets = new ArrayList<>();
-        enemyBullets = new ArrayList<>();
+        bullets = new ArrayList<Bullet>();
+        enemyBullets = new ArrayList<EnemyBullet>();
         enemies= new Enemy[5];
         for (int i=0; i<5; i++){
            Enemy  enemy =new Enemy(getResources(), screenX, screenY);
@@ -105,13 +106,15 @@ public class GameView extends SurfaceView implements Runnable {
 
         // bullets
 
-        trash = new ArrayList<>(9999);
+        trash = new ArrayList<>();
         for (Bullet bullet: bullets){
-            if(bullet.y<0){
+            if(bullet.y<=0){
                 trash.add(bullet);
             }
-
                 bullet.y = bullet.y-(int)( ( 70 * screenRatioY));
+
+
+
 
 
             for(Enemy enemy: enemies){
@@ -121,7 +124,7 @@ public class GameView extends SurfaceView implements Runnable {
                     enemy.y=-500;
                     randomShot = random.nextInt(40-20)+20;
                     System.out.println("Nowy random shot: "+randomShot);
-
+                   
                 }
             }
         }
@@ -154,13 +157,6 @@ public class GameView extends SurfaceView implements Runnable {
 
             }
 
-            //dla kazdego enemy robimy nowy bullet  co x czasu
-            // najpierw spróbujmy normalnie co 1s
-
-
-
-
-
 
             if(Rect.intersects(flight.getRectangle(), enemy.getRectangle())){
                 enemy.y=-500;
@@ -170,6 +166,7 @@ public class GameView extends SurfaceView implements Runnable {
             if(enemy.y>=screenY){
                 enemy.x = random.nextInt(screenX -enemy.widthEnemy);
                 enemy.y = -enemy.heightEnemy;
+
 
 
 
@@ -184,33 +181,35 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         //Enemy bullets
-        enemyTrash = new ArrayList<>(9999);
+        enemyTrash = new ArrayList<>();
 
-        for(EnemyBullet enemyBullet: enemyBullets){
-            if(enemyBullet.y>screenY){
-                enemyTrash.add(enemyBullet);
-            }
 
-            enemyBullet.y = enemyBullet.y+(int)( ( 30 * screenRatioY));
-
-            if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
-                isGameOver=true;
-            }
+    for(EnemyBullet enemyBullet: enemyBullets){
+        if(enemyBullet.y>screenY){
+            enemyTrash.add(enemyBullet);
         }
 
-        for(EnemyBullet enemyBullet: enemyTrash){
-            enemyBullets.remove(enemyBullet);
+        enemyBullet.y = enemyBullet.y+(int)( ( 30 * screenRatioY));
+
+        if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
+            isGameOver=true;
         }
+    }
+
+    for(EnemyBullet enemyBullet: enemyTrash){
+        enemyBullets.remove(enemyBullet);
+
+    }
 
 
 
 
 
 
-if(updateCounter==randomShot){
-    createNewEnemyBullet();
-    updateCounter = 0;
-}
+    if (updateCounter == randomShot) {
+        createNewEnemyBullet();
+        updateCounter = 0;
+    }
 
 
 
@@ -230,7 +229,8 @@ if(updateCounter==randomShot){
 
                     canvas.drawBitmap(enemyBullet.bullet, enemyBullet.x, enemyBullet.y, paint);
 
-                }} catch (ConcurrentModificationException e){
+                }
+            } catch (ConcurrentModificationException e){
                 System.out.println("Błąd z  enemy bullet");
                 e.printStackTrace();
 
@@ -238,7 +238,13 @@ if(updateCounter==randomShot){
 
             for (Enemy enemy: enemies){
 
-                canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
+
+               try{ canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);}
+               catch (ConcurrentModificationException e){
+                   System.out.println("Blad z statkiem wroga");
+                   e.printStackTrace();
+               }
+
 
             }
 
@@ -250,7 +256,6 @@ if(updateCounter==randomShot){
                 for (Bullet bullet : bullets) {
 
                     canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
-
                 }
 
 
@@ -345,7 +350,7 @@ if(updateCounter==randomShot){
     public void createNewBullet(){
         Bullet bullet = new Bullet(getResources());
         bullet.x= (int) ((( flight.x + flight.widthFlight/2)-18)*screenRatioX);
-        bullet.y = flight.y+flight.heightFlight/2;
+        bullet.y = flight.y-20;
         bullets.add(bullet);
 
 
@@ -359,7 +364,7 @@ if(updateCounter==randomShot){
         for(Enemy enemy: enemies){
             EnemyBullet enemyBullet = new EnemyBullet(getResources());
             enemyBullet.x = (int) (((enemy.x+enemy.widthEnemy/2)-18)*screenRatioX);
-            enemyBullet.y= enemy.y+10;
+            enemyBullet.y= enemy.y-20;
             enemyBullets.add(enemyBullet);
         }
 
