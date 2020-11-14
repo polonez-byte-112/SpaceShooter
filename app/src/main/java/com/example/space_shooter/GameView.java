@@ -57,22 +57,20 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         paint= new Paint();
-
+        random= new Random();
         bullets = new ArrayList<>();
         enemyBullets = new ArrayList<>();
         enemies= new Enemy[5];
-
         for (int i=0; i<5; i++){
            Enemy  enemy =new Enemy(getResources(), screenX, screenY);
             enemies[i]=enemy;
 
         }
 
-        random= new Random();
+        randomShot= random.nextInt(40-20)+20;
         score=0;
 
 
-       randomShot = random.nextInt(40-20)+20;
 
     }
 
@@ -121,7 +119,9 @@ public class GameView extends SurfaceView implements Runnable {
                     score++;
                     bullet.y=-500;
                     enemy.y=-500;
-                    enemy.wasShot=true;
+                    randomShot = random.nextInt(40-20)+20;
+                    System.out.println("Nowy random shot: "+randomShot);
+
                 }
             }
         }
@@ -149,6 +149,9 @@ public class GameView extends SurfaceView implements Runnable {
                 enemy.x = random.nextInt(screenX -enemy.widthEnemy);
                 enemy.y = -enemy.heightEnemy;
 
+
+
+
             }
 
             //dla kazdego enemy robimy nowy bullet  co x czasu
@@ -167,7 +170,14 @@ public class GameView extends SurfaceView implements Runnable {
             if(enemy.y>=screenY){
                 enemy.x = random.nextInt(screenX -enemy.widthEnemy);
                 enemy.y = -enemy.heightEnemy;
+
+
+
             }
+
+
+
+
 
 
         }
@@ -197,11 +207,13 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
-        if(updateCounter==randomShot){
-            createNewEnemyBullet();
-            updateCounter=0;
+if(updateCounter==randomShot){
+    createNewEnemyBullet();
+    updateCounter = 0;
+}
 
-        }
+
+
 
     }
 
@@ -213,9 +225,21 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(bg1.background, bg1.x, bg1.y,paint);
             canvas.drawBitmap(bg2.background, bg2.x, bg2.y,paint);
 
+            try{
+                for (EnemyBullet enemyBullet : enemyBullets) {
+
+                    canvas.drawBitmap(enemyBullet.bullet, enemyBullet.x, enemyBullet.y, paint);
+
+                }} catch (ConcurrentModificationException e){
+                System.out.println("Błąd z  enemy bullet");
+                e.printStackTrace();
+
+            }
 
             for (Enemy enemy: enemies){
+
                 canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
+
             }
 
 
@@ -229,16 +253,11 @@ public class GameView extends SurfaceView implements Runnable {
 
                 }
 
-                for(Enemy enemy: enemies){
-                    for (EnemyBullet enemyBullet : enemyBullets) {
 
-                        canvas.drawBitmap(enemyBullet.bullet, enemyBullet.x, enemyBullet.y, paint);
-
-                    }
-                }
             } catch (ConcurrentModificationException e){
                 System.out.println("Błąd z bullet");
                 e.printStackTrace();
+
             }
 
 
@@ -255,9 +274,11 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void waitBeforeExciting() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
             gameActivity.startActivity(new Intent(gameActivity, MainActivity.class));
+
             // zmienic na strone z wynikiem, i dodac takie samo tło
+
             gameActivity.finish();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -324,7 +345,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void createNewBullet(){
         Bullet bullet = new Bullet(getResources());
         bullet.x= (int) ((( flight.x + flight.widthFlight/2)-18)*screenRatioX);
-        bullet.y = flight.y-20;
+        bullet.y = flight.y+flight.heightFlight/2;
         bullets.add(bullet);
 
 
@@ -333,14 +354,15 @@ public class GameView extends SurfaceView implements Runnable {
 
 
     public void createNewEnemyBullet(){
+
+
         for(Enemy enemy: enemies){
             EnemyBullet enemyBullet = new EnemyBullet(getResources());
-            randomShot = random.nextInt(40-20)+20;
             enemyBullet.x = (int) (((enemy.x+enemy.widthEnemy/2)-18)*screenRatioX);
-            enemyBullet.y= enemy.y+20;
-
+            enemyBullet.y= enemy.y+10;
             enemyBullets.add(enemyBullet);
         }
+
     }
 
 

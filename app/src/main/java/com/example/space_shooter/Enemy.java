@@ -16,10 +16,10 @@ public class Enemy {
     int wingEnemyCounter=0;
     int x,y;
     int speed=10;
-    public boolean wasShot=true;
     Bitmap enemy1, enemy2, enemy3;
-
+    Random random;
     Enemy(Resources res, int screenX, int screenY){
+        random = new Random();
         enemy1= BitmapFactory.decodeResource(res, R.drawable.enemy1backup);
         enemy2= BitmapFactory.decodeResource(res, R.drawable.enemy2backup);
         enemy3= BitmapFactory.decodeResource(res, R.drawable.enemy3backup);
@@ -40,7 +40,7 @@ public class Enemy {
 
 
         // x i y potem ustawimy
-        Random random = new Random();
+
         x= random.nextInt(screenX- widthEnemy);
         y = 0;
     }
