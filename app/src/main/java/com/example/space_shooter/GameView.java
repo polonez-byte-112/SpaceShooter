@@ -17,17 +17,18 @@ import java.util.Random;
 
 public class GameView extends SurfaceView implements Runnable {
 
-  private   int screenX;
-  private   int screenY;
+  private final int screenX;
+  private final int screenY;
   public static    float screenRatioX, screenRatioY;
-    private   GameActivity gameActivity;
-    private  Background bg1, bg2;
-    private    Paint paint;
-    private List<Bullet> bullets;
-    private List<EnemyBullet> enemyBullets;
-    private    Flight flight;
-    private Enemy[] enemies;
-    private Random random;
+    private final GameActivity gameActivity;
+    private final Background bg1;
+    private final Background bg2;
+    private final Paint paint;
+    private final List<Bullet> bullets;
+    private final List<EnemyBullet> enemyBullets;
+    private final Flight flight;
+    private final Enemy[] enemies;
+    private final Random random;
    private boolean isRunning=true;
    private boolean isGameOver=false;
    private Thread thread;
@@ -38,7 +39,7 @@ public class GameView extends SurfaceView implements Runnable {
    public int updateCounter=0;
     int randomShot;
     static int life;
-    private  LifeIcon lifeIcon;
+    private final LifeIcon lifeIcon;
     Canvas canvas;
 
     public GameView(GameActivity gameActivity, int screenX, int screenY) {
@@ -167,7 +168,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             if(Rect.intersects(flight.getRectangle(), enemy.getRectangle())){
             life--;
-                enemy.y=-500;
+            enemy.y=-500;
                 if(life==0){
                 isGameOver=true;}
             }

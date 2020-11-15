@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity  {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-         backgroundOne = (ImageView) findViewById(R.id.background_one);
-         backgroundTwo = (ImageView) findViewById(R.id.background_two);
+         backgroundOne = findViewById(R.id.background_one);
+         backgroundTwo = findViewById(R.id.background_two);
 
 
           animator = ValueAnimator.ofFloat(1.0f, 0.0f);
