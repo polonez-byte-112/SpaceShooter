@@ -37,6 +37,8 @@ public class GameView extends SurfaceView implements Runnable {
    public int centerShip=0;
    public int updateCounter=0;
     int randomShot;
+    static int life;
+    private  LifeIcon lifeIcon;
     Canvas canvas;
 
     public GameView(GameActivity gameActivity, int screenX, int screenY) {
@@ -72,7 +74,11 @@ public class GameView extends SurfaceView implements Runnable {
         randomShot= random.nextInt(60-30)+30;
         score=0;
 
+        life=3;
 
+        lifeIcon = new LifeIcon(getResources());
+        lifeIcon.x = (int) (20*screenRatioX);
+        lifeIcon.y = (int) (20*screenRatioY);
 
     }
 
@@ -160,8 +166,10 @@ public class GameView extends SurfaceView implements Runnable {
 
 
             if(Rect.intersects(flight.getRectangle(), enemy.getRectangle())){
+            life--;
                 enemy.y=-500;
-                isGameOver=true;
+                if(life==0){
+                isGameOver=true;}
             }
 
             if(enemy.y>=screenY){
@@ -185,7 +193,10 @@ public class GameView extends SurfaceView implements Runnable {
         enemyBullet.y = enemyBullet.y+(int)( ( 20 * screenRatioY));
 
         if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
-            isGameOver=true;
+            life--;
+            enemyBullet.y=screenY+50;
+            if(life==0){
+            isGameOver=true;}
         }
     }
 
@@ -257,6 +268,9 @@ public class GameView extends SurfaceView implements Runnable {
                 e.printStackTrace();
 
             }
+
+
+            canvas.drawBitmap(lifeIcon.getLifeBitmap(), lifeIcon.x, lifeIcon.y, paint);
 
 
 
