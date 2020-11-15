@@ -21,9 +21,32 @@ public class Flight {
 
     Flight( GameView gameView, int screenX,int screenY, Resources res){
 
-            flight1= BitmapFactory.decodeResource(res, R.drawable.fly1);
-            flight2= BitmapFactory.decodeResource(res, R.drawable.fly2);
-            flight3= BitmapFactory.decodeResource(res, R.drawable.fly3);
+        if(MainActivity.theme==1) {
+            flight1 = BitmapFactory.decodeResource(res, R.drawable.theme11);
+            flight2 = BitmapFactory.decodeResource(res, R.drawable.theme12);
+            flight3 = BitmapFactory.decodeResource(res, R.drawable.theme13);
+        }
+
+
+        if(MainActivity.theme==2) {
+            flight1 = BitmapFactory.decodeResource(res, R.drawable.theme21);
+            flight2 = BitmapFactory.decodeResource(res, R.drawable.theme22);
+            flight3 = BitmapFactory.decodeResource(res, R.drawable.theme23);
+        }
+
+
+        if(MainActivity.theme==3) {
+            flight1 = BitmapFactory.decodeResource(res, R.drawable.theme31);
+            flight2 = BitmapFactory.decodeResource(res, R.drawable.theme32);
+            flight3 = BitmapFactory.decodeResource(res, R.drawable.theme33);
+        }
+
+
+        if(MainActivity.theme==4) {
+            flight1 = BitmapFactory.decodeResource(res, R.drawable.theme41);
+            flight2 = BitmapFactory.decodeResource(res, R.drawable.theme42);
+            flight3 = BitmapFactory.decodeResource(res, R.drawable.theme43);
+        }
 
 
             widthFlight = flight1.getWidth();
@@ -68,6 +91,6 @@ public class Flight {
 
 
     Rect getRectangle(){
-        return new Rect(x,y, x+widthFlight, y+heightFlight);
+        return new Rect(x+20,y+15, x+widthFlight-35, y+heightFlight-10);
     }
 }

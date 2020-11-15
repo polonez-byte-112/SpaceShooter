@@ -31,7 +31,7 @@ public class GameView extends SurfaceView implements Runnable {
    private boolean isRunning=true;
    private boolean isGameOver=false;
    private Thread thread;
-   private int score;
+   public int score;
     private List<Bullet> trash;
     private List<EnemyBullet> enemyTrash;
    public int centerShip=0;

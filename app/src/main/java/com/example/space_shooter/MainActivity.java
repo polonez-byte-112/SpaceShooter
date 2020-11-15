@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity  {
     int screenX,screenY;
     int screenRatioX, screenRatioY;
      ImageView backgroundOne, backgroundTwo;
+
+     public static int theme = 1;
    private ValueAnimator animator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

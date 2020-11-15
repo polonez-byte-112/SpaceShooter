@@ -32,6 +32,6 @@ public class EnemyBullet {
     }
 
     Rect getRectangle(){
-        return new Rect(x,y, x+width, y+height);
+        return new Rect(x+2,y, x+width-4, y+height-3);
     }
 }

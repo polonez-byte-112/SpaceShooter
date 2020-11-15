@@ -20,9 +20,9 @@ public class Enemy {
     Random random;
     Enemy(Resources res, int screenX, int screenY){
         random = new Random();
-        enemy1= BitmapFactory.decodeResource(res, R.drawable.enemy1backup);
-        enemy2= BitmapFactory.decodeResource(res, R.drawable.enemy2backup);
-        enemy3= BitmapFactory.decodeResource(res, R.drawable.enemy3backup);
+        enemy1= BitmapFactory.decodeResource(res, R.drawable.enemy1);
+        enemy2= BitmapFactory.decodeResource(res, R.drawable.enemy2);
+        enemy3= BitmapFactory.decodeResource(res, R.drawable.enemy3);
 
         widthEnemy = enemy1.getWidth();
         heightEnemy = enemy1.getHeight();
@@ -64,6 +64,6 @@ public class Enemy {
 
 
     Rect getRectangle(){
-        return new Rect(x,y, x+ widthEnemy, y+ heightEnemy);
+        return new Rect(x+5,y+5, x+ widthEnemy-10, y+ heightEnemy-10);
     }
 }
