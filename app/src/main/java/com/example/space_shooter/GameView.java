@@ -69,7 +69,7 @@ public class GameView extends SurfaceView implements Runnable {
 
         }
 
-        randomShot= random.nextInt(40-20)+20;
+        randomShot= random.nextInt(60-30)+30;
         score=0;
 
 
@@ -123,7 +123,7 @@ public class GameView extends SurfaceView implements Runnable {
                     score++;
                     bullet.y=-500;
                     enemy.y=-500;
-                    randomShot = random.nextInt(40-20)+20;
+                    randomShot = random.nextInt(60-30)+30;
                     System.out.println("Nowy random shot: "+randomShot);
                    
                 }
@@ -144,7 +144,7 @@ public class GameView extends SurfaceView implements Runnable {
             if ( enemy.y + enemy.heightEnemy < 0) {
 
 
-                int bound = (int) (30 * screenRatioY);
+                int bound = (int) (15 * screenRatioY);
                 enemy.speed = random.nextInt(bound);
 
                 if (enemy.speed < 10 * screenRatioY)
@@ -182,7 +182,7 @@ public class GameView extends SurfaceView implements Runnable {
             enemyTrash.add(enemyBullet);
         }
 
-        enemyBullet.y = enemyBullet.y+(int)( ( 30 * screenRatioY));
+        enemyBullet.y = enemyBullet.y+(int)( ( 20 * screenRatioY));
 
         if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
             isGameOver=true;
@@ -262,7 +262,6 @@ public class GameView extends SurfaceView implements Runnable {
 
             if(isGameOver){
                 isRunning=false;
-             //   getHolder().unlockCanvasAndPost(canvas);
                 waitBeforeExciting();
             }
 

@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -57,11 +58,44 @@ public class MainActivity extends AppCompatActivity  {
             public void onClick(View v) {
                     animator.cancel();
                     startActivity(new Intent(MainActivity.this, GameActivity.class));
-
             }
         });
 
 
+        findViewById(R.id.photob1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                theme=1;
+
+                Toast.makeText(getBaseContext(),"Ship 1 Selected", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        findViewById(R.id.photob2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                theme=2;
+                Toast.makeText(getBaseContext(),"Ship 2 Selected", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        findViewById(R.id.photob3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                theme=3;
+                Toast.makeText(getBaseContext(),"Ship 3 Selected", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        findViewById(R.id.photob4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                theme=4;
+                Toast.makeText(getBaseContext(),"Ship 4 Selected", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -78,4 +112,6 @@ public class MainActivity extends AppCompatActivity  {
             animator.pause();
         }
     }
+
+
 }
