@@ -37,7 +37,7 @@ public class GameView extends SurfaceView implements Runnable {
    public int centerShip=0;
    public int updateCounter=0;
     int randomShot;
-
+    Canvas canvas;
 
     public GameView(GameActivity gameActivity, int screenX, int screenY) {
         super(gameActivity);
@@ -199,7 +199,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
-    if (updateCounter == randomShot) {
+    if (updateCounter >= randomShot) {
         createNewEnemyBullet();
         updateCounter = 0;
     }
@@ -212,7 +212,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void draw(){
 
         if(getHolder().getSurface().isValid()){
-            Canvas canvas = getHolder().lockCanvas();
+             canvas = getHolder().lockCanvas();
 
             canvas.drawBitmap(bg1.background, bg1.x, bg1.y,paint);
             canvas.drawBitmap(bg2.background, bg2.x, bg2.y,paint);
@@ -262,7 +262,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             if(isGameOver){
                 isRunning=false;
-                getHolder().unlockCanvasAndPost(canvas);
+             //   getHolder().unlockCanvasAndPost(canvas);
                 waitBeforeExciting();
             }
 
@@ -358,7 +358,7 @@ public class GameView extends SurfaceView implements Runnable {
         for(Enemy enemy: enemies){
             EnemyBullet enemyBullet = new EnemyBullet(getResources());
             enemyBullet.x = (int) (((enemy.x+enemy.widthEnemy/2)-18)*screenRatioX);
-            enemyBullet.y= enemy.y-20;
+            enemyBullet.y= enemy.y+enemy.heightEnemy;
             enemyBullets.add(enemyBullet);
         }
 
