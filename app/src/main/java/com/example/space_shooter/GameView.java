@@ -6,20 +6,26 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import android.graphics.Rect;
+
+import android.media.MediaPlayer;
+
+
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
+
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import static android.content.ContentValues.TAG;
 
 public class GameView extends SurfaceView implements Runnable {
 
   private final int screenX;
   private final int screenY;
-  public static    float screenRatioX, screenRatioY;
+  public static float screenRatioX, screenRatioY;
     private final GameActivity gameActivity;
     private final Background bg1;
     private final Background bg2;
@@ -32,15 +38,19 @@ public class GameView extends SurfaceView implements Runnable {
    private boolean isRunning=true;
    private boolean isGameOver=false;
    private Thread thread;
-   public int score;
+   public static int score;
     private List<Bullet> trash;
     private List<EnemyBullet> enemyTrash;
    public int centerShip=0;
    public int updateCounter=0;
     int randomShot;
     static int life;
-    private final LifeIcon lifeIcon;
+    private  LifeIcon lifeIcon;
+    MediaPlayer  enemyGetShot, playerGetShot;
     Canvas canvas;
+    int textx;
+
+
 
     public GameView(GameActivity gameActivity, int screenX, int screenY) {
         super(gameActivity);
@@ -63,8 +73,8 @@ public class GameView extends SurfaceView implements Runnable {
 
         paint= new Paint();
         random= new Random();
-        bullets = new ArrayList<Bullet>();
-        enemyBullets = new ArrayList<EnemyBullet>();
+        bullets = new ArrayList<>();
+        enemyBullets = new ArrayList<>();
         enemies= new Enemy[5];
         for (int i=0; i<5; i++){
            Enemy  enemy =new Enemy(getResources(), screenX, screenY);
@@ -81,11 +91,30 @@ public class GameView extends SurfaceView implements Runnable {
         lifeIcon.x = (int) (20*screenRatioX);
         lifeIcon.y = (int) (20*screenRatioY);
 
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(108f);
+
+
+
+
+        enemyGetShot = MediaPlayer.create(gameActivity.getApplicationContext(), R.raw.get_shot);
+        enemyGetShot.setLooping(false);
+        playerGetShot = MediaPlayer.create(gameActivity.getApplicationContext(), R.raw.player_get_shot);
+        playerGetShot.setLooping(false);
+
+
+
+
+
+
+
+
     }
 
 
 
     public void update(){
+
         updateCounter++;
         bg1.y -= 10 * screenRatioX;
         bg2.y -= 10 * screenRatioX;
@@ -116,23 +145,21 @@ public class GameView extends SurfaceView implements Runnable {
 
         trash = new ArrayList<>();
         for (Bullet bullet: bullets){
-            if(bullet.y<=0){
+            if(bullet.y<0){
                 trash.add(bullet);
-            }
+            }else{
                 bullet.y = bullet.y-(int)( ( 70 * screenRatioY));
-
-
-
-
+            }
 
             for(Enemy enemy: enemies){
                 if(Rect.intersects(enemy.getRectangle(), bullet.getRectangle())){
                     score++;
-                    bullet.y=-500;
-                    enemy.y=-500;
+                    enemyGetShot.start();
                     randomShot = random.nextInt(60-30)+30;
                     System.out.println("Nowy random shot: "+randomShot);
-                   
+                    bullet.y=-500;
+                    enemy.y=-500;
+
                 }
             }
         }
@@ -168,9 +195,11 @@ public class GameView extends SurfaceView implements Runnable {
 
             if(Rect.intersects(flight.getRectangle(), enemy.getRectangle())){
             life--;
+
             enemy.y=-500;
                 if(life==0){
-                isGameOver=true;}
+                isGameOver=true;}else{ playerGetShot.start();}
+
             }
 
             if(enemy.y>=screenY){
@@ -195,9 +224,10 @@ public class GameView extends SurfaceView implements Runnable {
 
         if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
             life--;
+
             enemyBullet.y=screenY+50;
             if(life==0){
-            isGameOver=true;}
+            isGameOver=true;}else{ playerGetShot.start();}
         }
     }
 
@@ -218,6 +248,15 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
+    if(score<10){
+        textx= (int) ((screenX/2)-40*screenRatioX);
+    }else if(score>=10 && score<100){
+       textx= (int) ((screenX/2)-60*screenRatioX);
+    }else if(score>=100 & score<1000){
+        textx= (int) ((screenX/2) -100*screenRatioX);
+    }else{
+        textx= (int) ((screenX/2) -120*screenRatioX);
+    }
 
     }
 
@@ -280,6 +319,9 @@ public class GameView extends SurfaceView implements Runnable {
                 waitBeforeExciting();
             }
 
+
+            canvas.drawText(""+score, textx, 100, paint);
+
             getHolder().unlockCanvasAndPost(canvas);
         }
 
@@ -288,7 +330,10 @@ public class GameView extends SurfaceView implements Runnable {
     private void waitBeforeExciting() {
         try {
             Thread.sleep(1000);
-            gameActivity.startActivity(new Intent(gameActivity, MainActivity.class));
+
+            enemyGetShot.pause();
+            playerGetShot.pause();
+            gameActivity.startActivity(new Intent(gameActivity, ResultActivity.class));
 
             // zmienic na strone z wynikiem, i dodac takie samo tło
 
@@ -316,6 +361,8 @@ public class GameView extends SurfaceView implements Runnable {
 
             if (event.getY() < flight.y-150) {
                 createNewBullet();
+
+
             }
         }
 
