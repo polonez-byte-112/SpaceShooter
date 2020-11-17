@@ -55,6 +55,7 @@ public class GameView extends SurfaceView implements Runnable {
     int textx;
     public SoundPool soundPool;
     int shoot,enemyGetShot, playerGetShot;
+    private Bonus bonus;
 
     /**
      * Big thanks to @Beko and @Notescrew from Stack Overflow
@@ -91,6 +92,7 @@ public class GameView extends SurfaceView implements Runnable {
         newBullets = new ArrayList<>();
         enemyBullets = new ArrayList<>();
         enemies= new Enemy[5];
+        bonus = new Bonus(getResources());
         for (int i=0; i<5; i++){
             Enemy  enemy =new Enemy(getResources(), screenX);
             enemies[i]=enemy;
@@ -137,6 +139,8 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
+        bonus.x= random.nextInt(screenX-bonus.width);
+        bonus.y =-bonus.height;
     }
 
 
@@ -196,19 +200,6 @@ public class GameView extends SurfaceView implements Runnable {
             bullets.removeAll(trash);
             trash.clear();
 
-        /*
-                for(final Iterator<Bullet> bulletIterator =bullets.iterator(); bulletIterator.hasNext();){
-            final Bullet bullet = bulletIterator.next();
-            for(Bullet bullet1 : trash){
-                if(bullet.equals(bullet1))
-                {
-                    bulletIterator.remove();
-                }
-            }
-
-        }
-         */
-
 
 
         //Enemy
@@ -255,8 +246,6 @@ public class GameView extends SurfaceView implements Runnable {
 
         //Enemy bullets
         enemyTrash = new ArrayList<>();
-
-
         for(EnemyBullet enemyBullet: enemyBullets){
             if(enemyBullet.y>screenY){
                 enemyTrash.add(enemyBullet);
@@ -272,13 +261,16 @@ public class GameView extends SurfaceView implements Runnable {
                     isGameOver=true;}else{ soundPool.play(playerGetShot,1,1,1,0,1);}
             }
         }
+        enemyBullets.removeAll(enemyTrash);
+        enemyTrash.clear();
 
 
-            enemyBullets.removeAll(enemyTrash);
-            enemyTrash.clear();
+        bonus.y += 20*screenRatioY;
 
-
-
+        if(bonus.y>screenY){
+            bonus.y=-bonus.height;
+            bonus.randomBonus = random.nextInt(bonus.bound)+1;
+        }
 
 
 
@@ -298,6 +290,8 @@ public class GameView extends SurfaceView implements Runnable {
         }else{
             textx= (int) ((screenX/2) -120*screenRatioX);
         }
+
+
 
     }
 
@@ -350,6 +344,9 @@ public class GameView extends SurfaceView implements Runnable {
 
             }
 
+
+
+            canvas.drawBitmap(bonus.getBonus(), bonus.x, bonus.y, paint);
 
             canvas.drawBitmap(lifeIcon.getLifeBitmap(), lifeIcon.x, lifeIcon.y, paint);
 
