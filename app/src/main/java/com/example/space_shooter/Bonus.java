@@ -3,6 +3,7 @@ package com.example.space_shooter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 import java.util.Random;
 
@@ -17,11 +18,9 @@ public class Bonus {
     Bitmap extraHealth, bullet1, bullet2, bullet3, enemySlow,enemyFast,playerSlow, playerFast;
     // 8 jest obrazków i losujemy od 1-8
     static int bound = 8;
-  private   Random random;
+
 
     public Bonus(Resources res){
-
-        randomBonus = random.nextInt(bound)+1;
         extraHealth= BitmapFactory.decodeResource(res, R.drawable.health_extra_bonus);
 
         bullet1= BitmapFactory.decodeResource(res, R.drawable.bullet_bonus);
@@ -37,8 +36,8 @@ public class Bonus {
         width= extraHealth.getWidth();
         height = extraHealth.getHeight();
 
-        width *= 2;
-        height *=2;
+        width /= 4;
+        height /=4;
 
         width = (int) (width*screenRatioX);
         height = (int) (height* screenRatioY);
@@ -93,5 +92,9 @@ public class Bonus {
 
 
 
+    }
+
+    Rect getRectangle(){
+        return new Rect(x,y, x+width, y+height);
     }
 }

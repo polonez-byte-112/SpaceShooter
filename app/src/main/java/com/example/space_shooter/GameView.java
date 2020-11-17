@@ -140,6 +140,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         bonus.x= random.nextInt(screenX-bonus.width);
+        bonus.randomBonus = random.nextInt(Bonus.bound)+1;
         bonus.y =-bonus.height;
     }
 
@@ -268,9 +269,31 @@ public class GameView extends SurfaceView implements Runnable {
         bonus.y += 20*screenRatioY;
 
         if(bonus.y>screenY){
-            bonus.y=-bonus.height;
-            bonus.randomBonus = random.nextInt(bonus.bound)+1;
+            bonus.y=-(bonus.height+5*screenY);
+            bonus.randomBonus = random.nextInt(Bonus.bound)+1;
+            bonus.x= random.nextInt(screenX-bonus.width);
         }
+
+
+        if(bonus.y>0 && bonus.y<screenY){
+
+            if(Rect.intersects(flight.getRectangle(), bonus.getRectangle())){
+                bonus.y=-(bonus.height+5*screenY);
+                bonus.randomBonus = random.nextInt(Bonus.bound)+1;
+                bonus.x= random.nextInt(screenX-bonus.width);
+
+                doSpecificBonus();
+
+            }
+
+
+        }
+
+
+
+
+
+
 
 
 
@@ -295,6 +318,8 @@ public class GameView extends SurfaceView implements Runnable {
 
     }
 
+
+
     public void draw(){
 
         if(getHolder().getSurface().isValid()){
@@ -318,6 +343,9 @@ public class GameView extends SurfaceView implements Runnable {
                 e.printStackTrace();
 
             }
+
+            canvas.drawBitmap(bonus.getBonus(), bonus.x, bonus.y, paint);
+
 
             for (Enemy enemy: enemies){
 
@@ -346,7 +374,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
-            canvas.drawBitmap(bonus.getBonus(), bonus.x, bonus.y, paint);
+
 
             canvas.drawBitmap(lifeIcon.getLifeBitmap(), lifeIcon.x, lifeIcon.y, paint);
 
@@ -465,5 +493,56 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
 
+    private void doSpecificBonus() {
+
+        switch (bonus.randomBonus){
+            case 1: healthBonus(); break;
+            case 2: bullet1Bonus(); break;
+            case 3: bullet2Bonus(); break;
+            case 4: bullet3Bonus(); break;
+            case 5: enemySlowBonus(); break;
+            case 6: enemySpeedBonus(); break;
+            case 7: playerSlowBonus(); break;
+            case 8: playerSpeedBonus(); break;
+        }
+
+    }
+
+
+    private void healthBonus(){
+
+        System.out.println("Health bonus here");
+    }
+
+
+
+    private void bullet1Bonus(){
+        System.out.println("Bullet1 here");
+    }
+
+    private void bullet2Bonus(){
+        System.out.println("Bullet2 here");
+    }
+
+    private void bullet3Bonus(){
+        System.out.println("Bullet3 here");
+    }
+
+
+    private void enemySlowBonus(){
+        System.out.println("Enemy Slow here");
+    }
+
+    private void enemySpeedBonus(){
+        System.out.println("Enemy Speed here");
+    }
+
+    private void playerSlowBonus(){
+        System.out.println("Player Slow here");
+    }
+
+    private void playerSpeedBonus(){
+        System.out.println("Player Speed here");
+    }
 
 }
