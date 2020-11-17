@@ -19,6 +19,7 @@ import android.view.SurfaceView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -182,8 +183,15 @@ public class GameView extends SurfaceView implements Runnable {
                 }
             }
         }
-        for(Bullet bullet : trash){
-            bullets.removeAll(trash);
+        for(final Iterator<Bullet> bulletIterator =bullets.iterator(); bulletIterator.hasNext();){
+            final Bullet bullet = bulletIterator.next();
+            for(Bullet bullet1 : trash){
+                if(bullet.equals(bullet1))
+                {
+                bulletIterator.remove();
+                }
+            }
+
         }
 
 
