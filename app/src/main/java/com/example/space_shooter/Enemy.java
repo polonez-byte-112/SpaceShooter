@@ -18,7 +18,7 @@ public class Enemy {
     int speed=10;
     Bitmap enemy1, enemy2, enemy3;
     Random random;
-    Enemy(Resources res, int screenX, int screenY){
+    Enemy(Resources res, int screenX){
         random = new Random();
         enemy1= BitmapFactory.decodeResource(res, R.drawable.enemy1);
         enemy2= BitmapFactory.decodeResource(res, R.drawable.enemy2);

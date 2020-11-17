@@ -92,7 +92,7 @@ public class GameView extends SurfaceView implements Runnable {
         enemyBullets = new ArrayList<>();
         enemies= new Enemy[5];
         for (int i=0; i<5; i++){
-            Enemy  enemy =new Enemy(getResources(), screenX, screenY);
+            Enemy  enemy =new Enemy(getResources(), screenX);
             enemies[i]=enemy;
 
         }
