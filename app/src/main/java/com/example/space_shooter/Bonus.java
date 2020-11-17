@@ -22,7 +22,6 @@ public class Bonus {
     public Bonus(Resources res){
 
         randomBonus = random.nextInt(bound)+1;
-
         extraHealth= BitmapFactory.decodeResource(res, R.drawable.health_extra_bonus);
 
         bullet1= BitmapFactory.decodeResource(res, R.drawable.bullet_bonus);
