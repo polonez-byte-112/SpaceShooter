@@ -7,15 +7,20 @@ import android.graphics.Paint;
 
 import android.graphics.Rect;
 
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 
 
+import android.media.SoundPool;
+import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -33,7 +38,7 @@ public class GameView extends SurfaceView implements Runnable {
     private final List<Bullet> bullets;
     private final List<EnemyBullet> enemyBullets;
     private final Flight flight;
-    private final Enemy[] enemies;
+    private final List<Enemy> enemies;
     private final Random random;
    private boolean isRunning=true;
    private boolean isGameOver=false;
@@ -47,8 +52,10 @@ public class GameView extends SurfaceView implements Runnable {
     static int life;
     private  LifeIcon lifeIcon;
     MediaPlayer  enemyGetShot, playerGetShot;
+    SoundPool soundPool;
     Canvas canvas;
     int textx;
+    int shoot;
 
 
 
@@ -69,16 +76,38 @@ public class GameView extends SurfaceView implements Runnable {
         centerShip = flight.x;
 
         bg2.y=screenY;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes
+                    audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(
+                            AudioAttributes
+                                    .USAGE_ASSISTANCE_SONIFICATION)
+                    .setContentType(
+                            AudioAttributes
+                                    .CONTENT_TYPE_SONIFICATION)
+                    .build();
+
+            soundPool = new SoundPool.Builder().setMaxStreams(3).setAudioAttributes(audioAttributes).build();
+        }
+        else {
+            soundPool
+                    = new SoundPool(
+                    10,
+                    AudioManager.STREAM_MUSIC,
+                    0);
+        }
+
+        shoot = soundPool.load(gameActivity, R.raw.shoot, 1);
 
 
         paint= new Paint();
         random= new Random();
         bullets = new ArrayList<>();
         enemyBullets = new ArrayList<>();
-        enemies= new Enemy[5];
+        enemies= new ArrayList<>(5);
         for (int i=0; i<5; i++){
            Enemy  enemy =new Enemy(getResources(), screenX, screenY);
-            enemies[i]=enemy;
+            enemies.add(enemy);
 
         }
 
@@ -106,8 +135,8 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
-
-
+        trash = new ArrayList<>();
+        enemyTrash = new ArrayList<>();
 
     }
 
@@ -143,13 +172,23 @@ public class GameView extends SurfaceView implements Runnable {
 
         // bullets
 
-        trash = new ArrayList<>();
+
         for (Bullet bullet: bullets){
+
             if(bullet.y<0){
                 trash.add(bullet);
-            }else{
-                bullet.y = bullet.y-(int)( ( 70 * screenRatioY));
             }
+
+            for (final Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext();) {
+
+                Bullet bullett =  iterator.next();
+                if(trash.equals(bullet)){
+                    iterator.remove();
+                }
+            }
+
+            bullet.y = bullet.y+ (int)( -70 * screenRatioY);
+
 
             for(Enemy enemy: enemies){
                 if(Rect.intersects(enemy.getRectangle(), bullet.getRectangle())){
@@ -163,10 +202,6 @@ public class GameView extends SurfaceView implements Runnable {
                 }
             }
         }
-        for(Bullet bullet : trash){
-            bullets.remove(bullet);
-        }
-
 
 
         //Enemy
@@ -212,29 +247,24 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         //Enemy bullets
-        enemyTrash = new ArrayList<>();
 
 
-    for(EnemyBullet enemyBullet: enemyBullets){
-        if(enemyBullet.y>screenY){
-            enemyTrash.add(enemyBullet);
+        for(EnemyBullet enemyBullet: enemyBullets){
+            if(enemyBullet.y>screenY){
+                enemyTrash.add(enemyBullet);
+            }
+
+            enemyBullet.y = enemyBullet.y+(int)( ( 20 * screenRatioY));
+
+            if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
+                life--;
+
+                enemyBullet.y=screenY+50;
+                if(life==0){
+                isGameOver=true;}else{ playerGetShot.start();}
+            }
         }
 
-        enemyBullet.y = enemyBullet.y+(int)( ( 20 * screenRatioY));
-
-        if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
-            life--;
-
-            enemyBullet.y=screenY+50;
-            if(life==0){
-            isGameOver=true;}else{ playerGetShot.start();}
-        }
-    }
-
-    for(EnemyBullet enemyBullet: enemyTrash){
-        enemyBullets.remove(enemyBullet);
-
-    }
 
 
 
@@ -265,64 +295,47 @@ public class GameView extends SurfaceView implements Runnable {
         if(getHolder().getSurface().isValid()){
              canvas = getHolder().lockCanvas();
 
-            canvas.drawBitmap(bg1.background, bg1.x, bg1.y,paint);
-            canvas.drawBitmap(bg2.background, bg2.x, bg2.y,paint);
+                canvas.drawBitmap(bg1.background, bg1.x, bg1.y,paint);
+                canvas.drawBitmap(bg2.background, bg2.x, bg2.y,paint);
 
-            canvas.drawBitmap(flight.getFlight(), flight.x, flight.y, paint);
+                canvas.drawBitmap(flight.getFlight(), flight.x, flight.y, paint);
 
 
-            try {
-                for (Bullet bullet : bullets) {
+                for (Bullet bullet: bullets) {
 
                     canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
+
+                }
+
+                for (Enemy enemy: enemies){
+
+                    canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);
                 }
 
 
-            } catch (ConcurrentModificationException e){
-                System.out.println("Błąd z bullet");
-                e.printStackTrace();
-
-            }
-
-            for (Enemy enemy: enemies){
-
-
-               try{ canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);}
-               catch (ConcurrentModificationException e){
-                   System.out.println("Blad z statkiem wroga");
-                   e.printStackTrace();
-               }
-
-
-            }
-
-            try{
                 for (EnemyBullet enemyBullet : enemyBullets) {
 
                     canvas.drawBitmap(enemyBullet.bullet, enemyBullet.x, enemyBullet.y, paint);
 
                 }
-            } catch (ConcurrentModificationException e)
-            {
-                System.out.println("Błąd z  enemy bullet");
-                e.printStackTrace();
-
-            }
 
 
-            canvas.drawBitmap(lifeIcon.getLifeBitmap(), lifeIcon.x, lifeIcon.y, paint);
+
+                 canvas.drawBitmap(lifeIcon.getLifeBitmap(), lifeIcon.x, lifeIcon.y, paint);
 
 
+
+
+
+
+                canvas.drawText(""+score, textx, 100, paint);
+
+            getHolder().unlockCanvasAndPost(canvas);
 
             if(isGameOver){
                 isRunning=false;
                 waitBeforeExciting();
             }
-
-
-            canvas.drawText(""+score, textx, 100, paint);
-
-            getHolder().unlockCanvasAndPost(canvas);
         }
 
     }
@@ -330,9 +343,6 @@ public class GameView extends SurfaceView implements Runnable {
     private void waitBeforeExciting() {
         try {
             Thread.sleep(1000);
-
-            enemyGetShot.pause();
-            playerGetShot.pause();
             gameActivity.startActivity(new Intent(gameActivity, ResultActivity.class));
 
             // zmienic na strone z wynikiem, i dodac takie samo tło
@@ -360,6 +370,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 
             if (event.getY() < flight.y-150) {
+                soundPool.play(shoot,1,1,1,0,1);
                 createNewBullet();
 
 
