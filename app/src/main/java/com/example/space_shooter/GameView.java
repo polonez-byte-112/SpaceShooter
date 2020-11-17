@@ -27,36 +27,44 @@ import static android.content.ContentValues.TAG;
 
 public class GameView extends SurfaceView implements Runnable {
 
-  private final int screenX;
-  private final int screenY;
-  public static float screenRatioX, screenRatioY;
+    private final int screenX;
+    private final int screenY;
+    public static float screenRatioX, screenRatioY;
     private final GameActivity gameActivity;
     private final Background bg1;
     private final Background bg2;
     private final Paint paint;
     private final List<Bullet> bullets;
+    private final List<Bullet> newBullets;
     private final List<EnemyBullet> enemyBullets;
     private final Flight flight;
     private final Enemy[] enemies;
     private final Random random;
-   private boolean isRunning=true;
-   private boolean isGameOver=false;
-   private Thread thread;
-   public static int score;
+    private boolean isRunning=true;
+    private boolean isGameOver=false;
+    private Thread thread;
+    public static int score;
     private List<Bullet> trash;
     private List<EnemyBullet> enemyTrash;
-   public int centerShip=0;
-   public int updateCounter=0;
+    public int centerShip=0;
+    public int updateCounter=0;
     int randomShot;
     static int life;
     private  LifeIcon lifeIcon;
-    MediaPlayer  enemyGetShot, playerGetShot;
     Canvas canvas;
     int textx;
     public SoundPool soundPool;
-    int shoot;
+    int shoot,enemyGetShot, playerGetShot;
 
+    /**
+     * Big thanks to @Beko and @Notescrew from Stack Overflow
+     *They helped me with ConcurrentModificationException
+     *Full story here
+     * https://stackoverflow.com/questions/64876689/concurrentmodificationexception-at-displaying-bullets/
+     * @Beko : https://stackoverflow.com/users/4303296/beko
+     * @Notescrew https://stackoverflow.com/users/4762502/notescrew
 
+     */
 
     public GameView(GameActivity gameActivity, int screenX, int screenY) {
         super(gameActivity);
@@ -80,10 +88,11 @@ public class GameView extends SurfaceView implements Runnable {
         paint= new Paint();
         random= new Random();
         bullets = new ArrayList<>();
+        newBullets = new ArrayList<>();
         enemyBullets = new ArrayList<>();
         enemies= new Enemy[5];
         for (int i=0; i<5; i++){
-           Enemy  enemy =new Enemy(getResources(), screenX, screenY);
+            Enemy  enemy =new Enemy(getResources(), screenX, screenY);
             enemies[i]=enemy;
 
         }
@@ -103,10 +112,6 @@ public class GameView extends SurfaceView implements Runnable {
 
 
 
-        enemyGetShot = MediaPlayer.create(gameActivity.getApplicationContext(), R.raw.get_shot);
-        enemyGetShot.setLooping(false);
-        playerGetShot = MediaPlayer.create(gameActivity.getApplicationContext(), R.raw.player_get_shot);
-        playerGetShot.setLooping(false);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -127,6 +132,9 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         shoot= soundPool.load(gameActivity.getApplicationContext(), R.raw.shoot, 1);
+        playerGetShot= soundPool.load(gameActivity.getApplicationContext(), R.raw.player_get_shot, 1);
+        enemyGetShot= soundPool.load(gameActivity.getApplicationContext(), R.raw.get_shot, 1);
+
 
 
     }
@@ -162,19 +170,21 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         // bullets
+        bullets.addAll(newBullets);
+        newBullets.clear();
 
         trash = new ArrayList<>();
         for (Bullet bullet: bullets){
             if(bullet.y<0){
                 trash.add(bullet);
             }
-                bullet.y = bullet.y-(int)( ( 70 * screenRatioY));
+            bullet.y = bullet.y-(int)( ( 70 * screenRatioY));
 
 
             for(Enemy enemy: enemies){
                 if(Rect.intersects(enemy.getRectangle(), bullet.getRectangle())){
                     score++;
-                    enemyGetShot.start();
+                   soundPool.play(enemyGetShot, 1,1,1,0,1);
                     randomShot = random.nextInt(60-30)+30;
                     System.out.println("Nowy random shot: "+randomShot);
                     bullet.y=-500;
@@ -183,16 +193,21 @@ public class GameView extends SurfaceView implements Runnable {
                 }
             }
         }
-        for(final Iterator<Bullet> bulletIterator =bullets.iterator(); bulletIterator.hasNext();){
+            bullets.removeAll(trash);
+            trash.clear();
+
+        /*
+                for(final Iterator<Bullet> bulletIterator =bullets.iterator(); bulletIterator.hasNext();){
             final Bullet bullet = bulletIterator.next();
             for(Bullet bullet1 : trash){
                 if(bullet.equals(bullet1))
                 {
-                bulletIterator.remove();
+                    bulletIterator.remove();
                 }
             }
 
         }
+         */
 
 
 
@@ -221,11 +236,11 @@ public class GameView extends SurfaceView implements Runnable {
 
 
             if(Rect.intersects(flight.getRectangle(), enemy.getRectangle())){
-            life--;
+                life--;
 
-            enemy.y=-500;
+                enemy.y=-500;
                 if(life==0){
-                isGameOver=true;}else{ playerGetShot.start();}
+                    isGameOver=true;}else{ soundPool.play(playerGetShot,1,1,1,0,1);}
 
             }
 
@@ -242,55 +257,54 @@ public class GameView extends SurfaceView implements Runnable {
         enemyTrash = new ArrayList<>();
 
 
-    for(EnemyBullet enemyBullet: enemyBullets){
-        if(enemyBullet.y>screenY){
-            enemyTrash.add(enemyBullet);
+        for(EnemyBullet enemyBullet: enemyBullets){
+            if(enemyBullet.y>screenY){
+                enemyTrash.add(enemyBullet);
+            }
+
+            enemyBullet.y = enemyBullet.y+(int)( ( 20 * screenRatioY));
+
+            if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
+                life--;
+
+                enemyBullet.y=screenY+50;
+                if(life==0){
+                    isGameOver=true;}else{ soundPool.play(playerGetShot,1,1,1,0,1);}
+            }
         }
 
-        enemyBullet.y = enemyBullet.y+(int)( ( 20 * screenRatioY));
 
-        if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
-            life--;
+            enemyBullets.removeAll(enemyTrash);
+            enemyTrash.clear();
 
-            enemyBullet.y=screenY+50;
-            if(life==0){
-            isGameOver=true;}else{ playerGetShot.start();}
+
+
+
+
+
+        if (updateCounter >= randomShot) {
+            createNewEnemyBullet();
+            updateCounter = 0;
         }
-    }
-
-    for(EnemyBullet enemyBullet: enemyTrash){
-        enemyBullets.remove(enemyTrash);
-
-    }
 
 
 
-
-
-
-    if (updateCounter >= randomShot) {
-        createNewEnemyBullet();
-        updateCounter = 0;
-    }
-
-
-
-    if(score<10){
-        textx= (int) ((screenX/2)-40*screenRatioX);
-    }else if(score>=10 && score<100){
-       textx= (int) ((screenX/2)-60*screenRatioX);
-    }else if(score>=100 & score<1000){
-        textx= (int) ((screenX/2) -100*screenRatioX);
-    }else{
-        textx= (int) ((screenX/2) -120*screenRatioX);
-    }
+        if(score<10){
+            textx= (int) ((screenX/2)-40*screenRatioX);
+        }else if(score>=10 && score<100){
+            textx= (int) ((screenX/2)-60*screenRatioX);
+        }else if(score>=100 & score<1000){
+            textx= (int) ((screenX/2) -100*screenRatioX);
+        }else{
+            textx= (int) ((screenX/2) -120*screenRatioX);
+        }
 
     }
 
     public void draw(){
 
         if(getHolder().getSurface().isValid()){
-             canvas = getHolder().lockCanvas();
+            canvas = getHolder().lockCanvas();
 
             canvas.drawBitmap(bg1.background, bg1.x, bg1.y,paint);
             canvas.drawBitmap(bg2.background, bg2.x, bg2.y,paint);
@@ -314,11 +328,11 @@ public class GameView extends SurfaceView implements Runnable {
             for (Enemy enemy: enemies){
 
 
-               try{ canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);}
-               catch (ConcurrentModificationException e){
-                   System.out.println("Blad z statkiem wroga");
-                   e.printStackTrace();
-               }
+                try{ canvas.drawBitmap(enemy.getEnemy(), enemy.x, enemy.y, paint);}
+                catch (ConcurrentModificationException e){
+                    System.out.println("Blad z statkiem wroga");
+                    e.printStackTrace();
+                }
 
 
             }
@@ -358,8 +372,6 @@ public class GameView extends SurfaceView implements Runnable {
         try {
             Thread.sleep(1000);
 
-            enemyGetShot.pause();
-            playerGetShot.pause();
             gameActivity.startActivity(new Intent(gameActivity, ResultActivity.class));
 
             // zmienic na strone z wynikiem, i dodac takie samo tło
@@ -416,9 +428,9 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
     public void resume(){
-      thread = new Thread(this);
-      isRunning=true;
-      thread.start();
+        thread = new Thread(this);
+        isRunning=true;
+        thread.start();
     }
 
     @Override
@@ -434,7 +446,9 @@ public class GameView extends SurfaceView implements Runnable {
         Bullet bullet = new Bullet(getResources());
         bullet.x= (int) ((( flight.x + flight.widthFlight/2)-18)*screenRatioX);
         bullet.y = flight.y-20;
-        bullets.add(bullet);
+        // @Beko: this is my best guess:
+//        bullets.add(bullet);  // @Beko: avoid adding new bullet to this list, because when update deletes elements while you add someting to it, you get ConcurrentModificationException
+        newBullets.add(bullet); // @Beko: use a different list to add new bullets
 
 
 
