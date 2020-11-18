@@ -12,23 +12,22 @@ Export project from Zip and Import full folder
 
 ## 💻 Progress
 
-████▁▁▁▁▁▁ 40%
- 
-I want to improve this project heavily adding Bosses, overlaying music etc.
 
-I will check if I will have time for this
+ 
 <br/><br/>
 
-<a href="https://trello.com/b/DnXdZ71w/space-shooter" alt="Project">Project 🧑‍🚀</a>
 
 
 <br /><br/>
 ## 📷 Screenshots
 
 <p align="center">
-   <img src="photo2.jpg" width="250" alt="photo2">
-    <img src="photo1.jpg" width="250" alt="photo1">
-   <img src="photo3.jpg" width="250" alt="photo3">
+   <img src="p1.jpg" width="250" alt="photo2">
+    <img src="p2.jpg" width="250" alt="photo1">
+   <img src="p3.jpg" width="250" alt="photo3">
+      <img src="p4.jpg" width="250" alt="photo4">
+    <img src="p5.jpg" width="250" alt="photo5">
+=
 </p>
 
 

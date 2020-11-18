@@ -484,7 +484,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             Bullet bullet1 = new Bullet(getResources());
             bullet1.x = (int) (((flight.x + flight.widthFlight / 2) - 38) * screenRatioX);
-            bullet1.y = flight.y - 15;
+            bullet1.y = flight.y - 20;
             newBullets.add(bullet1);
             newBullets.add(bullet);
         }
@@ -492,12 +492,12 @@ public class GameView extends SurfaceView implements Runnable {
         if(amountOfBullets==3) {
             Bullet bullet = new Bullet(getResources());
             bullet.x = (int) (((flight.x + flight.widthFlight / 2)+28-20) * screenRatioX);
-            bullet.y = flight.y - 10;
+            bullet.y = flight.y - 20;
 
 
             Bullet bullet1 = new Bullet(getResources());
             bullet1.x = (int) (((flight.x + flight.widthFlight / 2)-20) * screenRatioX);
-            bullet1.y = flight.y - 15;
+            bullet1.y = flight.y - 20;
 
 
 
