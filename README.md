@@ -17,7 +17,18 @@ Export project from Zip and Import full folder
 
  
 <br/><br/>
+## 🗺️ What's new 
 
+* Sound Effects
+* Enemy shoot bullets 
+* Better background
+* Starship 4 theme.
+* 8 types of Bonuses
+* Add lives (up to 5)
+* Displaying live score and lives.
+* Fix colisions.
+* Fix major bug
+* Apk release
 
 
 <br /><br/>
