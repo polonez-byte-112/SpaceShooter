@@ -13,6 +13,8 @@ Export project from Zip and Import full folder
 ## 💻 Progress
 
 
+██████████  100%
+
  
 <br/><br/>
 
@@ -27,7 +29,6 @@ Export project from Zip and Import full folder
    <img src="p3.jpg" width="250" alt="photo3">
       <img src="p4.jpg" width="250" alt="photo4">
     <img src="p5.jpg" width="250" alt="photo5">
-=
 </p>
 
 
