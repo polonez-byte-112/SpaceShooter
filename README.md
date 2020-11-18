@@ -16,7 +16,7 @@ Export project from Zip and Import full folder
 
 I want to improve this project heavily adding Bosses, overlaying music etc.
 
-At the current Situation i have tu study to big exam that i didnt becouse all time programming xD
+At the current Situation i have tu study to big exam that i didnt becouse all time programming
 <br/><br/>
 
 <a href="https://trello.com/b/DnXdZ71w/space-shooter" alt="Project">Project 🧑‍🚀</a>
