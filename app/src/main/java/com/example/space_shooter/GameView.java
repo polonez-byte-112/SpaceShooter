@@ -8,22 +8,16 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 
 import android.media.SoundPool;
 import android.os.Build;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
-import static android.content.ContentValues.TAG;
 
 public class GameView extends SurfaceView implements Runnable {
 
@@ -49,14 +43,17 @@ public class GameView extends SurfaceView implements Runnable {
     public int centerShip=0;
     public int updateCounter=0;
     int randomShot;
+    int amountOfBullets =1;
     static int life;
-    private  LifeIcon lifeIcon;
+    private final LifeIcon lifeIcon;
     Canvas canvas;
     int textx;
     public SoundPool soundPool;
-    int shoot,enemyGetShot, playerGetShot;
-    private Bonus bonus;
-
+    int shoot,enemyGetShot, playerGetShot, bonusSound;
+    int playerSpeed=10,enemyBulletSpeed=20, playerBulletSpeed=70;
+    String currentEnemySpeed="normal";
+    private final Bonus bonus;
+    int bound;
     /**
      * Big thanks to @Beko and @Notescrew from Stack Overflow
      *They helped me with ConcurrentModificationException
@@ -112,31 +109,12 @@ public class GameView extends SurfaceView implements Runnable {
         paint.setTextSize(108f);
 
 
-
-
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_GAME)
-                    .build();
-
-            soundPool = new SoundPool.Builder()
-                    .setAudioAttributes(audioAttributes)
-                    .build();
-
-        }else{
-            soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        }
-
-
+        soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 1);
 
         shoot= soundPool.load(gameActivity.getApplicationContext(), R.raw.shoot, 1);
         playerGetShot= soundPool.load(gameActivity.getApplicationContext(), R.raw.player_get_shot, 1);
         enemyGetShot= soundPool.load(gameActivity.getApplicationContext(), R.raw.get_shot, 1);
-
+        bonusSound= soundPool.load(gameActivity.getApplicationContext(), R.raw.bonus, 1);
 
 
         bonus.x= random.nextInt(screenX-bonus.width);
@@ -161,10 +139,10 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         if(flight.isGoingLeft==true && flight.isGoingRight==false){
-            flight.x -=10;
+            flight.x -=playerSpeed;
         }
         if(flight.isGoingLeft==false && flight.isGoingRight==true){
-            flight.x +=10;
+            flight.x +=playerSpeed;
         }
         if(flight.x >=screenX-flight.widthFlight){
             flight.x=screenX-flight.widthFlight;
@@ -183,7 +161,7 @@ public class GameView extends SurfaceView implements Runnable {
             if(bullet.y<0){
                 trash.add(bullet);
             }
-            bullet.y = bullet.y-(int)( ( 70 * screenRatioY));
+            bullet.y = bullet.y-(int)( ( playerBulletSpeed * screenRatioY));
 
 
             for(Enemy enemy: enemies){
@@ -211,12 +189,35 @@ public class GameView extends SurfaceView implements Runnable {
 
             if ( enemy.y + enemy.heightEnemy < 0) {
 
+                if(currentEnemySpeed.equals("normal")){
+                 bound = (int) (15 * screenRatioY);
 
-                int bound = (int) (15 * screenRatioY);
-                enemy.speed = random.nextInt(bound);
+                    enemy.speed = random.nextInt(bound);
 
-                if (enemy.speed < 10 * screenRatioY)
-                    enemy.speed = (int) (10 * screenRatioY);
+                    if (enemy.speed < 10 * screenRatioY)
+                        enemy.speed = (int) (10 * screenRatioY);
+                }
+
+                if(currentEnemySpeed.equals("slow")){
+                    bound = (int) (5 * screenRatioY);
+
+                    enemy.speed = random.nextInt(bound);
+
+                    if (enemy.speed < 4 * screenRatioY)
+                        enemy.speed = (int) (4 * screenRatioY);
+                }
+
+
+                if(currentEnemySpeed.equals("fast")){
+                    bound = (int) (25 * screenRatioY);
+
+                    enemy.speed = random.nextInt(bound);
+
+                    if (enemy.speed < 20 * screenRatioY)
+                        enemy.speed = (int) (20 * screenRatioY);
+                }
+
+
 
                 enemy.x = random.nextInt(screenX -enemy.widthEnemy);
                 enemy.y = -enemy.heightEnemy;
@@ -229,7 +230,8 @@ public class GameView extends SurfaceView implements Runnable {
 
             if(Rect.intersects(flight.getRectangle(), enemy.getRectangle())){
                 life--;
-
+               if(amountOfBullets==2){ amountOfBullets=1;}
+               if(amountOfBullets==3){ amountOfBullets=2;}
                 enemy.y=-500;
                 if(life==0){
                     isGameOver=true;}else{ soundPool.play(playerGetShot,1,1,1,0,1);}
@@ -252,7 +254,7 @@ public class GameView extends SurfaceView implements Runnable {
                 enemyTrash.add(enemyBullet);
             }
 
-            enemyBullet.y = enemyBullet.y+(int)( ( 20 * screenRatioY));
+            enemyBullet.y = enemyBullet.y+(int)( ( enemyBulletSpeed * screenRatioY));
 
             if(Rect.intersects(flight.getRectangle(), enemyBullet.getRectangle())){
                 life--;
@@ -265,24 +267,19 @@ public class GameView extends SurfaceView implements Runnable {
         enemyBullets.removeAll(enemyTrash);
         enemyTrash.clear();
 
-
+        //BONUSES
         bonus.y += 20*screenRatioY;
-
-        if(bonus.y>screenY){
+        if(bonus.y+ bonus.height>screenY){
             bonus.y=-(bonus.height+5*screenY);
             bonus.randomBonus = random.nextInt(Bonus.bound)+1;
             bonus.x= random.nextInt(screenX-bonus.width);
         }
-
-
         if(bonus.y>0 && bonus.y<screenY){
-
-            if(Rect.intersects(flight.getRectangle(), bonus.getRectangle())){
+        if(Rect.intersects(flight.getRectangle(), bonus.getRectangle())){
                 bonus.y=-(bonus.height+5*screenY);
+                doSpecificBonus();
                 bonus.randomBonus = random.nextInt(Bonus.bound)+1;
                 bonus.x= random.nextInt(screenX-bonus.width);
-
-                doSpecificBonus();
 
             }
 
@@ -468,14 +465,49 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     public void createNewBullet(){
-        Bullet bullet = new Bullet(getResources());
-        bullet.x= (int) ((( flight.x + flight.widthFlight/2)-18)*screenRatioX);
-        bullet.y = flight.y-20;
-        // @Beko: this is my best guess:
-//        bullets.add(bullet);  // @Beko: avoid adding new bullet to this list, because when update deletes elements while you add someting to it, you get ConcurrentModificationException
-        newBullets.add(bullet); // @Beko: use a different list to add new bullets
 
 
+        if(amountOfBullets==1) {
+            Bullet bullet = new Bullet(getResources());
+            bullet.x = (int) (((flight.x + flight.widthFlight / 2) - 18) * screenRatioX);
+            bullet.y = flight.y - 20;
+            // @Beko: this is my best guess:
+             // @Beko: avoid adding new bullet to this list, because when update deletes elements while you add someting to it, you get ConcurrentModificationException
+            newBullets.add(bullet); // @Beko: use a different list to add new bullets
+        }
+
+        if(amountOfBullets==2) {
+            Bullet bullet = new Bullet(getResources());
+            bullet.x = (int) (((flight.x + flight.widthFlight / 2)-10) * screenRatioX);
+            bullet.y = flight.y - 20;
+
+
+            Bullet bullet1 = new Bullet(getResources());
+            bullet1.x = (int) (((flight.x + flight.widthFlight / 2) - 38) * screenRatioX);
+            bullet1.y = flight.y - 15;
+            newBullets.add(bullet1);
+            newBullets.add(bullet);
+        }
+
+        if(amountOfBullets==3) {
+            Bullet bullet = new Bullet(getResources());
+            bullet.x = (int) (((flight.x + flight.widthFlight / 2)+28-20) * screenRatioX);
+            bullet.y = flight.y - 10;
+
+
+            Bullet bullet1 = new Bullet(getResources());
+            bullet1.x = (int) (((flight.x + flight.widthFlight / 2)-20) * screenRatioX);
+            bullet1.y = flight.y - 15;
+
+
+
+            Bullet bullet2 = new Bullet(getResources());
+            bullet2.x = (int) (((flight.x + flight.widthFlight / 2) - 48) * screenRatioX);
+            bullet2.y = flight.y - 20;
+            newBullets.add(bullet);
+            newBullets.add(bullet1);
+            newBullets.add(bullet2);
+        }
 
     }
 
@@ -494,7 +526,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 
     private void doSpecificBonus() {
-
+        soundPool.play(bonusSound, 1,1,1,0,1);
         switch (bonus.randomBonus){
             case 1: healthBonus(); break;
             case 2: bullet1Bonus(); break;
@@ -511,38 +543,46 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void healthBonus(){
 
-        System.out.println("Health bonus here");
+        if(life<5){
+            life++;
+        }
     }
 
 
 
     private void bullet1Bonus(){
-        System.out.println("Bullet1 here");
+        System.out.println("Sprawia ze z automatu 1 bullet");
+        amountOfBullets =1;
     }
 
     private void bullet2Bonus(){
-        System.out.println("Bullet2 here");
+        amountOfBullets =2;
     }
 
     private void bullet3Bonus(){
-        System.out.println("Bullet3 here");
+        amountOfBullets =3;
     }
 
 
     private void enemySlowBonus(){
-        System.out.println("Enemy Slow here");
+      if(currentEnemySpeed.equals("normal")){ currentEnemySpeed="slow"; enemyBulletSpeed=17;}
+        if(currentEnemySpeed.equals("fast")){ currentEnemySpeed="normal"; enemyBulletSpeed=20;}
     }
 
     private void enemySpeedBonus(){
-        System.out.println("Enemy Speed here");
+
+        if(currentEnemySpeed.equals("normal")){ currentEnemySpeed="fast"; enemyBulletSpeed=30;}
+        if(currentEnemySpeed.equals("slow")){ currentEnemySpeed="normal"; enemyBulletSpeed=20;}
     }
 
     private void playerSlowBonus(){
-        System.out.println("Player Slow here");
+        if(playerSpeed==10){playerSpeed=5; playerBulletSpeed=55;}
+        if(playerSpeed==15){playerSpeed=10; playerBulletSpeed=70;}
     }
 
     private void playerSpeedBonus(){
-        System.out.println("Player Speed here");
+        if(playerSpeed==10){playerSpeed=15; playerBulletSpeed=90;}
+        if(playerSpeed==5){playerSpeed=10; playerBulletSpeed=70;}
     }
 
 }
