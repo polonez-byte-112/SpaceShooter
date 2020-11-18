@@ -5,8 +5,12 @@ This project is a recreation of an old retro game
 
 
 <br /><br/>
-## 🕹️ Instalation
+## 🕹️ Instalation and How to Play
 Export project from Zip and Import full folder
+
+You move your ship by clicking screen 30% from bottom. 70% of screen is shooting option. 
+If You click on left side in those 30% you will move left. Same thing with right side
+
 <br /><br/>
 
 
