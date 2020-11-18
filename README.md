@@ -12,15 +12,9 @@ Export project from Zip and Import full folder
 
 ## 💻 Progress
 
-████▁▁▁▁▁▁ 40%
- 
-I want to improve this project heavily adding Bosses, overlaying music etc.
+██████████ 100%
 
-I will check if I will have time for this
 <br/><br/>
-
-<a href="https://trello.com/b/DnXdZ71w/space-shooter" alt="Project">Project 🧑‍🚀</a>
-
 
 <br /><br/>
 ## 📷 Screenshots
