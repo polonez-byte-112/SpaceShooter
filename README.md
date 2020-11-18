@@ -28,6 +28,7 @@ Export project from Zip and Import full folder
 * Displaying live score and lives.
 * Fix colisions.
 * Fix major bug
+* Result activity
 * Apk release
 
 
