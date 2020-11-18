@@ -15,12 +15,15 @@ import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity  {
 
     int screenX,screenY;
     int screenRatioX, screenRatioY;
      ImageView backgroundOne, backgroundTwo;
+
+     public static int theme = 1;
    private ValueAnimator animator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +31,8 @@ public class MainActivity extends AppCompatActivity  {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-         backgroundOne = (ImageView) findViewById(R.id.background_one);
-         backgroundTwo = (ImageView) findViewById(R.id.background_two);
+         backgroundOne = findViewById(R.id.background_one);
+         backgroundTwo = findViewById(R.id.background_two);
 
 
           animator = ValueAnimator.ofFloat(1.0f, 0.0f);
@@ -55,11 +58,44 @@ public class MainActivity extends AppCompatActivity  {
             public void onClick(View v) {
                     animator.cancel();
                     startActivity(new Intent(MainActivity.this, GameActivity.class));
-
             }
         });
 
 
+        findViewById(R.id.photob1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                theme=1;
+
+                Toast.makeText(getBaseContext(),"Ship 1 Selected", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        findViewById(R.id.photob2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                theme=2;
+                Toast.makeText(getBaseContext(),"Ship 2 Selected", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        findViewById(R.id.photob3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                theme=3;
+                Toast.makeText(getBaseContext(),"Ship 3 Selected", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        findViewById(R.id.photob4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                theme=4;
+                Toast.makeText(getBaseContext(),"Ship 4 Selected", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -76,4 +112,6 @@ public class MainActivity extends AppCompatActivity  {
             animator.pause();
         }
     }
+
+
 }

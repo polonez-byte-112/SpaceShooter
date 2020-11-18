@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/result_background_one"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/start_background" />
+
+    <ImageView
+        android:id="@+id/result_background_two"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/start_background" />
+
+
+    <TextView
+        android:id="@+id/resultTitle"
+        android:layout_width="423dp"
+        android:layout_height="200dp"
+        android:gravity="bottom|center_horizontal"
+        android:rotationY="25"
+        android:text=" Space Shooter"
+        android:textColor="#FFFFFF"
+        android:textSize="36sp" />
+
+    <TextView
+        android:id="@+id/resultBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="300dp"
+        android:background="@drawable/bg_result_box"
+        android:gravity="center"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="380dp"
+        android:fontFamily="sans-serif-condensed"
+        android:text="Score "
+        android:textColor="#FFA500"
+        android:textSize="30sp"
+        android:textStyle="bold|italic" />
+
+    <TextView
+        android:id="@+id/displayScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="330dp"
+        android:fontFamily="sans-serif-condensed"
+        android:text="1000"
+        android:textColor="#FFA500"
+        android:textSize="30sp"
+        android:textStyle="bold|italic" />
+
+
+    <Button
+        android:id="@+id/playAgain"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="170dp"
+        android:layout_height="69dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/bg_startbutton"
+        android:text="PLAY" />
+
+
+</FrameLayout>
