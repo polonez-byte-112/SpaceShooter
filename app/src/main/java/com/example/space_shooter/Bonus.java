@@ -14,7 +14,6 @@ public class Bonus {
 
 
     int x,y,width,height, randomBonus;
-    String currentBonus="";
     Bitmap extraHealth, bullet1, bullet2, bullet3, enemySlow,enemyFast,playerSlow, playerFast;
     // 8 jest obrazków i losujemy od 1-8
     static int bound = 8;

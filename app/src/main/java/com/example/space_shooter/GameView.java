@@ -118,7 +118,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 
         bonus.x= random.nextInt(screenX-bonus.width);
-        bonus.randomBonus = random.nextInt(Bonus.bound)+1;
+        bonus.randomBonus = (int) Math.floor(Math.random()*8)+1;
         bonus.y =-bonus.height;
     }
 
@@ -166,6 +166,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             for(Enemy enemy: enemies){
                 if(Rect.intersects(enemy.getRectangle(), bullet.getRectangle())){
+                    if(enemy.y+ enemy.heightEnemy/2>0){
                     score++;
                    soundPool.play(enemyGetShot, 1,1,1,0,1);
                     randomShot = random.nextInt(60-30)+30;
@@ -173,6 +174,7 @@ public class GameView extends SurfaceView implements Runnable {
                     bullet.y=-500;
                     enemy.y=-500;
 
+                    }
                 }
             }
         }
@@ -271,14 +273,14 @@ public class GameView extends SurfaceView implements Runnable {
         bonus.y += 20*screenRatioY;
         if(bonus.y+ bonus.height>screenY){
             bonus.y=-(bonus.height+5*screenY);
-            bonus.randomBonus = random.nextInt(Bonus.bound)+1;
+            bonus.randomBonus = (int) Math.floor(Math.random()*8)+1;
             bonus.x= random.nextInt(screenX-bonus.width);
         }
         if(bonus.y>0 && bonus.y<screenY){
         if(Rect.intersects(flight.getRectangle(), bonus.getRectangle())){
                 bonus.y=-(bonus.height+5*screenY);
                 doSpecificBonus();
-                bonus.randomBonus = random.nextInt(Bonus.bound)+1;
+                bonus.randomBonus = (int) Math.floor(Math.random()*8)+1;
                 bonus.x= random.nextInt(screenX-bonus.width);
 
             }
