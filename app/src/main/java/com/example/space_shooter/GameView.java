@@ -276,15 +276,11 @@ public class GameView extends SurfaceView implements Runnable {
             bonus.randomBonus = (int) Math.floor(Math.random()*8)+1;
             bonus.x= random.nextInt(screenX-bonus.width);
         }
-        if(bonus.y>0 && bonus.y<screenY){
         if(Rect.intersects(flight.getRectangle(), bonus.getRectangle())){
-                bonus.y=-(bonus.height+5*screenY);
-                doSpecificBonus();
-                bonus.randomBonus = (int) Math.floor(Math.random()*8)+1;
-                bonus.x= random.nextInt(screenX-bonus.width);
-
-            }
-
+            doSpecificBonus();
+            bonus.y=-(bonus.height+5*screenY);
+            bonus.randomBonus = (int) Math.floor(Math.random()*8)+1;
+            bonus.x= random.nextInt(screenX-bonus.width);
 
         }
 
